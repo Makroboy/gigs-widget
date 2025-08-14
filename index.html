@@ -59,7 +59,7 @@
     <tr>
       <th>Date</th>
       <th>City</th>
-      <th>Venue</th>
+      <th>Venue / Event</th>
     </tr>
   </thead>
   <tbody></tbody>
@@ -69,14 +69,20 @@
 <script>
 (function(){
   const gigs = window.gigs;
-  gigs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // Sort manually by converting pp.kk.vvvv → Date
+  gigs.sort((a, b) => {
+    const [da, ma, ya] = a.date.split(".");
+    const [db, mb, yb] = b.date.split(".");
+    return new Date(`${yb}-${mb}-${db}`) - new Date(`${ya}-${ma}-${da}`);
+  }).reverse(); // newest first
 
   const tbody = document.querySelector('#gigTable tbody');
   const yearFilter = document.getElementById('yearFilter');
   const cityFilter = document.getElementById('cityFilter');
   const searchInput = document.getElementById('search');
 
-  const years = [...new Set(gigs.map(g => g.date.substring(0,4)))].sort((a,b) => b-a);
+  const years = [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b) => b-a);
   years.forEach(y => {
     const opt = document.createElement('option');
     opt.value = y;
@@ -100,7 +106,7 @@
     tbody.innerHTML = '';
     gigs
       .filter(g => 
-        (!yearVal || g.date.startsWith(yearVal)) &&
+        (!yearVal || g.date.endsWith(yearVal)) &&
         (!cityVal || g.city === cityVal) &&
         (
           g.city.toLowerCase().includes(searchTerm) ||
