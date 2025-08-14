@@ -60,79 +60,69 @@
       <th>Date</th>
       <th>City</th>
       <th>Venue</th>
-      <th>Notes</th>
     </tr>
   </thead>
   <tbody></tbody>
 </table>
 
+<script src="gigs.js"></script>
 <script>
-(async function(){
-  try {
-    const res = await fetch('./gigs.json', { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const gigs = await res.json();
+(function(){
+  const gigs = window.gigs;
+  gigs.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    gigs.sort((a, b) => new Date(b.date) - new Date(a.date));
+  const tbody = document.querySelector('#gigTable tbody');
+  const yearFilter = document.getElementById('yearFilter');
+  const cityFilter = document.getElementById('cityFilter');
+  const searchInput = document.getElementById('search');
 
-    const tbody = document.querySelector('#gigTable tbody');
-    const yearFilter = document.getElementById('yearFilter');
-    const cityFilter = document.getElementById('cityFilter');
-    const searchInput = document.getElementById('search');
+  const years = [...new Set(gigs.map(g => g.date.substring(0,4)))].sort((a,b) => b-a);
+  years.forEach(y => {
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y;
+    yearFilter.appendChild(opt);
+  });
 
-    const years = [...new Set(gigs.map(g => g.date.substring(0,4)))].sort((a,b) => b-a);
-    years.forEach(y => {
-      const opt = document.createElement('option');
-      opt.value = y;
-      opt.textContent = y;
-      yearFilter.appendChild(opt);
-    });
+  const cities = [...new Set(gigs.map(g => g.city))].sort();
+  cities.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    cityFilter.appendChild(opt);
+  });
 
-    const cities = [...new Set(gigs.map(g => g.city))].sort();
-    cities.forEach(c => {
-      const opt = document.createElement('option');
-      opt.value = c;
-      opt.textContent = c;
-      cityFilter.appendChild(opt);
-    });
+  function render() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const yearVal = yearFilter.value;
+    const cityVal = cityFilter.value;
 
-    function render() {
-      const searchTerm = searchInput.value.toLowerCase();
-      const yearVal = yearFilter.value;
-      const cityVal = cityFilter.value;
-
-      tbody.innerHTML = '';
-      gigs
-        .filter(g => 
-          (!yearVal || g.date.startsWith(yearVal)) &&
-          (!cityVal || g.city === cityVal) &&
-          (
-            g.city.toLowerCase().includes(searchTerm) ||
-            g.venue.toLowerCase().includes(searchTerm) ||
-            g.notes.toLowerCase().includes(searchTerm)
-          )
+    tbody.innerHTML = '';
+    gigs
+      .filter(g => 
+        (!yearVal || g.date.startsWith(yearVal)) &&
+        (!cityVal || g.city === cityVal) &&
+        (
+          g.city.toLowerCase().includes(searchTerm) ||
+          g.venue.toLowerCase().includes(searchTerm)
         )
-        .forEach(g => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${g.date}</td>
-            <td>${g.city}</td>
-            <td>${g.venue}</td>
-            <td>${g.notes}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-    }
-
-    searchInput.addEventListener('input', render);
-    yearFilter.addEventListener('change', render);
-    cityFilter.addEventListener('change', render);
-
-    render();
-  } catch (err) {
-    document.body.innerHTML += `<p style="color:red;text-align:center;">Error loading gigs: ${err.message}</p>`;
-    console.error(err);
+      )
+      .forEach(g => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${g.date}</td>
+          <td>${g.city}</td>
+          <td>${g.venue}</td>
+        `;
+        tbody.appendChild(tr);
+      });
   }
+
+  searchInput.addEventListener('input', render);
+  yearFilter.addEventListener('change', render);
+  cityFilter.addEventListener('change', render);
+
+  render();
 })();
 </script>
 
