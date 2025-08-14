@@ -1,1 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gig Archive</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #0b0b0c;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+  }
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+  }
+  input, select {
+    padding: 6px;
+    font-size: 14px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 8px;
+    border-bottom: 1px solid #444;
+    text-align: left;
+  }
+  th {
+    background-color: #1a1a1a;
+  }
+</style>
+</head>
+<body>
 
+<h1>Gig Archive</h1>
+
+<div class="filters">
+  <input type="text" id="search" placeholder="Search...">
+  <select id="yearFilter">
+    <option value="">All years</option>
+  </select>
+  <select id="cityFilter">
+    <option value="">All cities</option>
+  </select>
+</div>
+
+<table id="gigTable">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>City</th>
+      <th>Venue</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+async function loadGigs() {
+  const res = await fetch('gigs.json');
+  let gigs = await res.json();
+
+  // Sort newest first
+  gigs.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  const tbody = document.querySelector('#gigTable tbody');
+  const yearFilter = document.getElementById('yearFilter');
+  const cityFilter = document.getElementById('cityFilter');
+  const searchInput = document.getElementById('search');
+
+  // Populate filters
+  const years = [...new Set(gigs.map(g => g.date.substring(0,4)))].sort((a,b) => b-a);
+  years.forEach(y => {
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y;
+    yearFilter.appendChild(opt);
+  });
+
+  const cities = [...new Set(gigs.map(g => g.city))].sort();
+  cities.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    cityFilter.appendChild(opt);
+  });
+
+  function render() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const yearVal = yearFilter.value;
+    const cityVal = cityFilter.value;
+
+    tbody.innerHTML = '';
+    gigs
+      .filter(g => 
+        (!yearVal || g.date.startsWith(yearVal)) &&
+        (!cityVal || g.city === cityVal) &&
+        (
+          g.city.toLowerCase().includes(searchTerm) ||
+          g.venue.toLowerCase().includes(searchTerm) ||
+          g.notes.toLowerCase().includes(searchTerm)
+        )
+      )
+      .forEach(g => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${g.date}</td>
+          <td>${g.city}</td>
+          <td>${g.venue}</td>
+          <td>${g.notes}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+  }
+
+  searchInput.addEventListener('input', render);
+  yearFilter.addEventListener('change', render);
+  cityFilter.addEventListener('change', render);
+
+  render();
+}
+
+loadGigs();
+</script>
+
+</body>
+</html>
