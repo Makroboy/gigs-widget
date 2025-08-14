@@ -5,69 +5,90 @@
 <title>Kemopetrol Gig Archive</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-  :root{
-    --bg:#0b0b0c; --fg:#e0e0e0; --card:#1a1a1a; --border:#444;
-  }
-  body{
+  body {
     font-family: Arial, sans-serif;
-    background: var(--bg);
-    color: var(--fg);
-    margin:0; padding:20px;
+    background-color: #0b0b0c;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 20px;
   }
-  h1{ text-align:center; font-size:1.8em; margin:0 0 18px; }
-
-  .filters{
-    display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:14px;
+  h1 {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
   }
-  .filters input, .filters select{
-    padding:8px; font-size:14px; border-radius:8px;
-    border:1px solid var(--border); background:var(--card); color:var(--fg);
-    width:min(320px,100%);
+  .logo-inline {
+    height: 1em; /* sama korkeus kuin tekstillä */
+    vertical-align: middle;
   }
-
-  /* Taulukko kääre – mahdollistaa vaakaskrollin tarvittaessa */
-  .table-wrapper{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
-
-  table{ width:100%; border-collapse:collapse; table-layout:auto; }
-  th, td{
-    padding:10px; border-bottom:1px solid var(--border); text-align:left; font-size:15px;
-    white-space:normal; word-break:break-word; /* rivitä pitkät nimet */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
   }
-  th{ background:var(--card); position:sticky; top:0; z-index:1; }
-
-  /* Pienet näytöt: piilota Country-sarake kokonaan */
-  @media (max-width: 500px){
-    body{ padding:12px; }
-    h1{ font-size:1.5em; }
-    th, td{ padding:9px; font-size:14px; }
-    th.country, td.country{ display:none; }
+  input, select {
+    padding: 6px;
+    font-size: 14px;
+  }
+  .table-container {
+    overflow-x: auto; /* sallii vaakaselaamisen pienillä näytöillä */
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 500px;
+  }
+  th, td {
+    padding: 8px;
+    border-bottom: 1px solid #444;
+    text-align: left;
+    white-space: nowrap; /* estää rivien katkeamisen */
+  }
+  th {
+    background-color: #1a1a1a;
   }
 </style>
 </head>
 <body>
 
-<h1>Kemopetrol Gig Archive</h1>
+<h1>
+  Kemopetrol Gig Archive 
+  <img src="kemopetrol_logo.png" alt="Kemopetrol logo" class="logo-inline">
+</h1>
 
 <div class="filters">
   <input type="text" id="search" placeholder="Search...">
-  <select id="yearFilter"><option value="">All years</option></select>
-  <select id="venueFilter"><option value="">All venues / events</option></select>
-  <select id="cityFilter"><option value="">All cities</option></select>
-  <select id="countryFilter"><option value="">All countries</option></select>
+  <select id="yearFilter">
+    <option value="">All years</option>
+  </select>
+  <select id="venueFilter">
+    <option value="">All venues / events</option>
+  </select>
+  <select id="cityFilter">
+    <option value="">All cities</option>
+  </select>
+  <select id="countryFilter">
+    <option value="">All countries</option>
+  </select>
 </div>
 
-<div class="table-wrapper">
-  <table id="gigTable">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Venue / Event</th>
-        <th>City</th>
-        <th class="country">Country</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+<div class="table-container">
+<table id="gigTable">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Venue / Event</th>
+      <th>City</th>
+      <th>Country</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 </div>
 
 <script src="gigs.js"></script>
@@ -75,7 +96,6 @@
 (function(){
   const gigs = window.gigs;
 
-  // uusimmasta vanhimpaan
   gigs.sort((a, b) => {
     const [da, ma, ya] = a.date.split(".");
     const [db, mb, yb] = b.date.split(".");
@@ -89,45 +109,77 @@
   const countryFilter = document.getElementById('countryFilter');
   const searchInput = document.getElementById('search');
 
-  // Suodatinten datat
   const years = [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b) => b-a);
-  years.forEach(y => { const o=document.createElement('option'); o.value=y; o.textContent=y; yearFilter.appendChild(o); });
-  const venues = [...new Set(gigs.map(g => g.venue))].sort();
-  venues.forEach(v => { const o=document.createElement('option'); o.value=v; o.textContent=v; venueFilter.appendChild(o); });
-  const cities = [...new Set(gigs.map(g => g.city))].sort();
-  cities.forEach(c => { const o=document.createElement('option'); o.value=c; o.textContent=c; cityFilter.appendChild(o); });
-  const countries = [...new Set(gigs.map(g => g.country))].sort();
-  countries.forEach(c => { const o=document.createElement('option'); o.value=c; o.textContent=c; countryFilter.appendChild(o); });
+  years.forEach(y => {
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y;
+    yearFilter.appendChild(opt);
+  });
 
-  function render(){
-    const s = searchInput.value.toLowerCase();
-    const y = yearFilter.value, v = venueFilter.value, c = cityFilter.value, co = countryFilter.value;
+  const venues = [...new Set(gigs.map(g => g.venue))].sort();
+  venues.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v;
+    opt.textContent = v;
+    venueFilter.appendChild(opt);
+  });
+
+  const cities = [...new Set(gigs.map(g => g.city))].sort();
+  cities.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    cityFilter.appendChild(opt);
+  });
+
+  const countries = [...new Set(gigs.map(g => g.country))].sort();
+  countries.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    countryFilter.appendChild(opt);
+  });
+
+  function render() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const yearVal = yearFilter.value;
+    const venueVal = venueFilter.value;
+    const cityVal = cityFilter.value;
+    const countryVal = countryFilter.value;
 
     tbody.innerHTML = '';
-    gigs.filter(g =>
-      (!y || g.date.endsWith(y)) &&
-      (!v || g.venue === v) &&
-      (!c || g.city === c) &&
-      (!co || g.country === co) &&
-      ( g.date.toLowerCase().includes(s) ||
-        g.venue.toLowerCase().includes(s) ||
-        g.city.toLowerCase().includes(s) ||
-        g.country.toLowerCase().includes(s)
+    gigs
+      .filter(g => 
+        (!yearVal || g.date.endsWith(yearVal)) &&
+        (!venueVal || g.venue === venueVal) &&
+        (!cityVal || g.city === cityVal) &&
+        (!countryVal || g.country === countryVal) &&
+        (
+          g.date.toLowerCase().includes(searchTerm) ||
+          g.venue.toLowerCase().includes(searchTerm) ||
+          g.city.toLowerCase().includes(searchTerm) ||
+          g.country.toLowerCase().includes(searchTerm)
+        )
       )
-    ).forEach(g => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${g.date}</td>
-        <td>${g.venue}</td>
-        <td>${g.city}</td>
-        <td class="country">${g.country}</td>
-      `;
-      tbody.appendChild(tr);
-    });
+      .forEach(g => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${g.date}</td>
+          <td>${g.venue}</td>
+          <td>${g.city}</td>
+          <td>${g.country}</td>
+        `;
+        tbody.appendChild(tr);
+      });
   }
 
   searchInput.addEventListener('input', render);
-  [yearFilter, venueFilter, cityFilter, countryFilter].forEach(el => el.addEventListener('change', render));
+  yearFilter.addEventListener('change', render);
+  venueFilter.addEventListener('change', render);
+  cityFilter.addEventListener('change', render);
+  countryFilter.addEventListener('change', render);
+
   render();
 })();
 </script>
