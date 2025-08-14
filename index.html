@@ -12,31 +12,71 @@
     margin: 0;
     padding: 20px;
   }
+
   h1 {
     text-align: center;
+    font-size: 1.8em;
+    margin-bottom: 20px;
   }
+
   .filters {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     justify-content: center;
   }
-  input, select {
-    padding: 6px;
+
+  .filters input,
+  .filters select {
+    padding: 8px;
     font-size: 14px;
+    border-radius: 4px;
+    border: none;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
   }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
   table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 500px;
   }
+
   th, td {
-    padding: 8px;
+    padding: 10px;
     border-bottom: 1px solid #444;
     text-align: left;
+    font-size: 15px;
   }
+
   th {
     background-color: #1a1a1a;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  /* Pienet näytöt */
+  @media (max-width: 600px) {
+    body {
+      padding: 10px;
+    }
+    h1 {
+      font-size: 1.4em;
+    }
+    .filters {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    th, td {
+      padding: 8px;
+      font-size: 14px;
+    }
   }
 </style>
 </head>
@@ -50,7 +90,7 @@
     <option value="">All years</option>
   </select>
   <select id="venueFilter">
-    <option value="">All venues / events </option>
+    <option value="">All venues / events</option>
   </select>
   <select id="cityFilter">
     <option value="">All cities</option>
@@ -60,17 +100,19 @@
   </select>
 </div>
 
-<table id="gigTable">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Venue / Event</th>
-      <th>City</th>
-      <th>Country</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+<div class="table-container">
+  <table id="gigTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Venue / Event</th>
+        <th>City</th>
+        <th>Country</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 
 <script src="gigs.js"></script>
 <script>
@@ -90,7 +132,6 @@
   const countryFilter = document.getElementById('countryFilter');
   const searchInput = document.getElementById('search');
 
-  // Populate filters
   const years = [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b) => b-a);
   years.forEach(y => {
     const opt = document.createElement('option');
