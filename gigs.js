@@ -1,7 +1,7 @@
 window.gigs = [
   // 2025
   { date: "09.08.2025", venue: "Tampere City Festival", city: "Tampere", country: "Finland" },
-  { date: "01.08.2025", venue: "Tavastia", city: "Helsinki", country: "Finland" },
+  { date: "01.08.2025", venue: "Tavastia-klubi", city: "Helsinki", country: "Finland" },
   { date: "05.07.2025", venue: "Ilovaari", city: "Joensuu", country: "Finland" },
   { date: "14.06.2025", venue: "Helsinki City Festival", city: "Helsinki", country: "Finland" },
   { date: "14.03.2025", venue: "Pensselitehdas", city: "Porvoo", country: "Finland" },
@@ -77,7 +77,7 @@ window.gigs = [
 
   // 2005
   { date: "06.02.2005", venue: "Goom-risteily, M/S Romantika (Tallink)", city: "M/S Romantika", country: "Finland" },
-  { date: "08.01.2005", venue: "Asian disaster benefit, Nosturi", city: "Helsinki", country: "Finland" },
+  { date: "08.01.2005", venue: "Nosturi", city: "Helsinki", country: "Finland" },
 
   // 2004
   { date: "18.12.2004", venue: "Tavastia", city: "Helsinki", country: "Finland" },
@@ -102,7 +102,7 @@ window.gigs = [
   { date: "03.07.2004", venue: "Räyhärock", city: "Loviisa", country: "Finland" },
   { date: "26.06.2004", venue: "Kalajoen Juhannus Festival", city: "Kalajoki", country: "Finland" },
   { date: "25.06.2004", venue: "Himos Festival", city: "Jämsä", country: "Finland" },
-  { date: "25.06.2004", venue: "Midnight Planet Festival", city: "Kouvola", country: "Finland" },
+  { date: "25.06.2004", venue: "Midnight Party Planet Festival, Tykkimäki", city: "Kouvola", country: "Finland" },
   { date: "19.06.2004", venue: "Provinssirock", city: "Seinäjoki", country: "Finland" },
   { date: "28.05.2004", venue: "FinnFest", city: "Hamburg", country: "Germany" },
   { date: "12.05.2004", venue: "Tavastia", city: "Helsinki", country: "Finland" },
@@ -194,7 +194,7 @@ window.gigs = [
   { date: "23.06.2001", venue: "Raumanmeren juhannus", city: "Rauma", country: "Finland" },
   { date: "23.06.2001", venue: "Rantarock", city: "Vaasa", country: "Finland" },
   { date: "22.06.2001", venue: "Mukkulan juhannus", city: "Lahti", country: "Finland" },
-  { date: "22.06.2001", venue: "Midnight Party Planet", city: "Kouvola", country: "Finland" },
+  { date: "22.06.2001", venue: "Midnight Party Planet, Tykkimäki", city: "Kouvola", country: "Finland" },
   { date: "17.06.2001", venue: "Provinssirock, Club", city: "Seinäjoki", country: "Finland" },
   { date: "16.06.2001", venue: "Provinssirock, Mainland stage", city: "Seinäjoki", country: "Finland" },
   { date: "09.06.2001", venue: "DBTL", city: "Turku", country: "Finland" },
@@ -237,7 +237,7 @@ window.gigs = [
   { date: "30.09.2000", venue: "Tuiskulan lava", city: "Nivala", country: "Finland" },
   { date: "29.09.2000", venue: "Club 25", city: "Vaasa", country: "Finland" },
   { date: "25.09.2000", venue: "In The City", city: "Manchester", country: "United Kingdom" },
-  { date: "23.09.2000", venue: "Akateeminen startti", city: "Kuopio", country: "Finland" },
+  { date: "23.09.2000", venue: "Akateeminen Startti", city: "Kuopio", country: "Finland" },
   { date: "22.09.2000", venue: "Kåren", city: "Turku", country: "Finland" },
   { date: "21.09.2000", venue: "Olympiateltta, Rautatientori", city: "Helsinki", country: "Finland" },
   { date: "08.09.2000", venue: "Puhdas elämä lapselle, Olympiastadion", city: "Helsinki", country: "Finland" },
@@ -252,7 +252,7 @@ window.gigs = [
   { date: "22.07.2000", venue: "Koriaroll", city: "Koria", country: "Finland" },
   { date: "16.07.2000", venue: "Tammerfest", city: "Tampere", country: "Finland" },
   { date: "08.07.2000", venue: "Ilosaarirock", city: "Joensuu", country: "Finland" },
-  { date: "24.06.2000", venue: "HimosFestival", city: "Jämsä", country: "Finland" },
+  { date: "24.06.2000", venue: "Himos Festival", city: "Jämsä", country: "Finland" },
   { date: "23.06.2000", venue: "Midnight Party Planet, Tykkimäki", city: "Kouvola", country: "Finland" },
   { date: "23.06.2000", venue: "Raumanmeren juhannus", city: "Rauma", country: "Finland" },
   { date: "22.06.2000", venue: "Hangon juhannus", city: "Hanko", country: "Finland" },
