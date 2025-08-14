@@ -1,5 +1,5 @@
 window.gigs = [
-  { date: "2025-08-01", city: "Helsinki", venue: "Tavastia" },
-  { date: "2025-07-20", city: "Tampere", venue: "Hype Festival" },
-  { date: "2024-11-08", city: "Helsinki", venue: "Ääniwalli" }
+  { date: "01.08.2025", city: "Helsinki", venue: "Tavastia" },
+  { date: "20.07.2025", city: "Tampere", venue: "Hype Festival" },
+  { date: "08.11.2024", city: "Helsinki", venue: "Ääniwalli" }
 ];
