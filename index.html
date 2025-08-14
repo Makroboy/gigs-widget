@@ -42,15 +42,21 @@
 </head>
 <body>
 
-<h1>Gig Archive</h1>
+<h1>Kemopetrol Gig Archive</h1>
 
 <div class="filters">
   <input type="text" id="search" placeholder="Search...">
   <select id="yearFilter">
     <option value="">All years</option>
   </select>
+  <select id="venueFilter">
+    <option value="">All venues</option>
+  </select>
   <select id="cityFilter">
     <option value="">All cities</option>
+  </select>
+  <select id="countryFilter">
+    <option value="">All countries</option>
   </select>
 </div>
 
@@ -58,8 +64,9 @@
   <thead>
     <tr>
       <th>Date</th>
-      <th>City</th>
       <th>Venue / Event</th>
+      <th>City</th>
+      <th>Country</th>
     </tr>
   </thead>
   <tbody></tbody>
@@ -70,7 +77,6 @@
 (function(){
   const gigs = window.gigs;
 
-  // Sort manually by converting pp.kk.vvvv → Date
   gigs.sort((a, b) => {
     const [da, ma, ya] = a.date.split(".");
     const [db, mb, yb] = b.date.split(".");
@@ -79,15 +85,26 @@
 
   const tbody = document.querySelector('#gigTable tbody');
   const yearFilter = document.getElementById('yearFilter');
+  const venueFilter = document.getElementById('venueFilter');
   const cityFilter = document.getElementById('cityFilter');
+  const countryFilter = document.getElementById('countryFilter');
   const searchInput = document.getElementById('search');
 
+  // Populate filters
   const years = [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b) => b-a);
   years.forEach(y => {
     const opt = document.createElement('option');
     opt.value = y;
     opt.textContent = y;
     yearFilter.appendChild(opt);
+  });
+
+  const venues = [...new Set(gigs.map(g => g.venue))].sort();
+  venues.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v;
+    opt.textContent = v;
+    venueFilter.appendChild(opt);
   });
 
   const cities = [...new Set(gigs.map(g => g.city))].sort();
@@ -98,27 +115,42 @@
     cityFilter.appendChild(opt);
   });
 
+  const countries = [...new Set(gigs.map(g => g.country))].sort();
+  countries.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    countryFilter.appendChild(opt);
+  });
+
   function render() {
     const searchTerm = searchInput.value.toLowerCase();
     const yearVal = yearFilter.value;
+    const venueVal = venueFilter.value;
     const cityVal = cityFilter.value;
+    const countryVal = countryFilter.value;
 
     tbody.innerHTML = '';
     gigs
       .filter(g => 
         (!yearVal || g.date.endsWith(yearVal)) &&
+        (!venueVal || g.venue === venueVal) &&
         (!cityVal || g.city === cityVal) &&
+        (!countryVal || g.country === countryVal) &&
         (
+          g.date.toLowerCase().includes(searchTerm) ||
+          g.venue.toLowerCase().includes(searchTerm) ||
           g.city.toLowerCase().includes(searchTerm) ||
-          g.venue.toLowerCase().includes(searchTerm)
+          g.country.toLowerCase().includes(searchTerm)
         )
       )
       .forEach(g => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${g.date}</td>
-          <td>${g.city}</td>
           <td>${g.venue}</td>
+          <td>${g.city}</td>
+          <td>${g.country}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -126,7 +158,9 @@
 
   searchInput.addEventListener('input', render);
   yearFilter.addEventListener('change', render);
+  venueFilter.addEventListener('change', render);
   cityFilter.addEventListener('change', render);
+  countryFilter.addEventListener('change', render);
 
   render();
 })();
