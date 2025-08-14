@@ -15,13 +15,12 @@
   h1 {
     text-align: center;
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
   }
   .logo-inline {
-    height: 1em; /* sama korkeus kuin tekstillä */
+    height: 1em;
     vertical-align: middle;
   }
   .filters {
@@ -36,18 +35,18 @@
     font-size: 14px;
   }
   .table-container {
-    overflow-x: auto; /* sallii vaakaselaamisen pienillä näytöillä */
+    overflow-x: auto;
   }
   table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 500px;
+    min-width: 600px; /* estää sarakkeiden ahtautumisen */
   }
   th, td {
     padding: 8px;
     border-bottom: 1px solid #444;
     text-align: left;
-    white-space: nowrap; /* estää rivien katkeamisen */
+    white-space: nowrap;
   }
   th {
     background-color: #1a1a1a;
@@ -57,8 +56,8 @@
 <body>
 
 <h1>
-  Kemopetrol Gig Archive 
-  <img src="kemopetrol_logo.png" alt="Kemopetrol logo" class="logo-inline">
+  Kemopetrol Gig Archive
+  <img src="kemopetrol_logo_optimized.png" alt="Kemopetrol logo" class="logo-inline">
 </h1>
 
 <div class="filters">
