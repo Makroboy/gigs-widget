@@ -8,11 +8,45 @@
   :root { --bg:#0b0b0c; --fg:#e0e0e0; --card:#1a1a1a; --border:#444; }
   body { font-family: Arial, sans-serif; background:var(--bg); color:var(--fg); margin:0; padding:20px; }
 
-  /* Guarantee hidden works even if display is set elsewhere */
-  [hidden] { display: none !important; }
+  /* hidden must always hide */
+  [hidden]{ display:none !important; }
+
+  /* ===== Fixed background image + dim (Option A) ===== */
+  .bg-image{
+    position: fixed; inset: 0; z-index: -2;
+    background-image: url('KEMOUKKO-FINAL-Kemopetrol-A2+2mmbleedSOME.jpeg'); /* <- laita tämä kuva samaan kansioon */
+    background-size: cover;
+    background-position: center 68%;   /* siirtää fokusta hieman alemmas, jotta kuvan “Kemopetrol”-teksti ei kilpaile otsikon kanssa */
+    background-repeat: no-repeat;
+    filter: saturate(0.95);
+  }
+  .bg-dim{
+    position: fixed; inset: 0; z-index: -1;
+    background:
+      linear-gradient(180deg,
+        rgba(0,0,0,.85) 0%,    /* yläreuna tummempi */
+        rgba(0,0,0,.65) 32%,
+        rgba(0,0,0,.58) 55%,
+        rgba(0,0,0,.62) 100%
+      ),
+      radial-gradient(120% 70% at 50% 60%,
+        rgba(0,0,0,0) 0%,
+        rgba(0,0,0,.32) 100%
+      );
+    background-blend-mode: multiply;
+  }
+
+  /* ===== Card-ish containers on top of the image ===== */
+  .cardish{
+    background: rgba(20,20,22,.70);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px;
+    backdrop-filter: blur(2px);
+  }
+  .page-title.cardish{ background: rgba(10,10,12,.78); }
 
   /* Title */
-  .page-title{ display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; margin:0 0 10px; }
+  .page-title{ display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; margin:0 0 10px; padding:10px; }
   .title-line-big{ display:flex; align-items:center; justify-content:center; gap:8px; line-height:1.1;
     font-size:clamp(28px,5vw,40px); font-weight:700; }
   .title-line-sub{ font-size:clamp(14px,3.3vw,20px); opacity:.95; }
@@ -28,13 +62,11 @@
     font-size: 14px;
   }
   .oh-icon{ font-size: 18px; }
-  .oh-close{
-    margin-left: 6px; background: transparent; border: 0; color: var(--fg);
-    font-size: 18px; line-height: 1; cursor: pointer; padding: 0 4px;
-  }
+  .oh-close{ margin-left: 6px; background: transparent; border: 0; color: var(--fg);
+    font-size: 18px; line-height: 1; cursor: pointer; padding: 0 4px; }
 
   /* Controls */
-  .controls{ display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 14px; align-items:center; justify-content:center; }
+  .controls{ display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 14px; align-items:center; justify-content:center; padding:10px; }
   .filters{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -44,7 +76,6 @@
   @media (max-width:420px){
     .filters{ grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
   }
-
   input, select, button{
     padding:8px 10px; font-size:14px; border-radius:8px; border:1px solid var(--border);
     background:var(--card); color:var(--fg); cursor:pointer;
@@ -53,24 +84,32 @@
   button{ border-color:#555; }
 
   /* Summary + Top list */
-  .summary-bar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin:8px 0 16px; font-size:14px; }
+  .summary-bar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin:8px 0 16px; font-size:14px; padding:10px; }
   .summary-count{ padding:6px 10px; background:var(--card); border:1px solid var(--border); border-radius:8px; }
-  .group-box{ width:min(640px,100%); background:#111113; border:1px solid #333; border-radius:10px; padding:10px; }
+  .group-box{ width:min(640px,100%); background:#111113cc; border:1px solid #333; border-radius:10px; padding:10px; }
   .group-box-header{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
   .group-list{ margin:0; padding-left:24px; max-height:220px; overflow:auto; list-style:decimal; }
   .hidden{ display:none; }
 
   /* Table */
-  .table-container{ overflow-x:auto; }
+  .table-container{ overflow-x:auto; padding:10px; }
   table{ width:100%; border-collapse:collapse; min-width:600px; }
   th, td{ padding:8px; border-bottom:1px solid var(--border); text-align:left; white-space:nowrap; }
-  th{ background:var(--card); position:sticky; top:0; z-index:1; }
+  th{ background: rgba(26,26,26,.85); position:sticky; top:0; z-index:1; }
   th.num, td.num{ width:1%; text-align:right; }
 
+  /* Accessibility */
+  @media (prefers-reduced-transparency: reduce){
+    .cardish{ backdrop-filter:none; background: rgba(20,20,22,.92); }
+  }
   @media (max-width:500px){ body{ padding:16px; } input, select, button{ padding:8px; font-size:13px; } }
 </style>
 </head>
 <body>
+
+<!-- Background layers -->
+<div class="bg-image" aria-hidden="true"></div>
+<div class="bg-dim" aria-hidden="true"></div>
 
 <!-- Orientation/landscape hint -->
 <div id="orientationHint" class="orientation-hint" aria-live="polite" hidden>
@@ -79,14 +118,14 @@
   <button id="orientationClose" class="oh-close" type="button" aria-label="Dismiss">×</button>
 </div>
 
-<div class="page-title">
+<div class="page-title cardish">
   <div class="title-line-big">
     Kemopetrol <img src="kemopetrol_logo_optimized.png" alt="Kemopetrol logo" class="logo-inline" />
   </div>
   <div class="title-line-sub">Gig Archive</div>
 </div>
 
-<div class="controls">
+<div class="controls cardish">
   <div class="filters">
     <input type="text" id="search" placeholder="Search..." />
     <select id="yearFilter"><option value="">All years</option></select>
@@ -97,11 +136,10 @@
   <button id="toggleOrder" aria-label="Toggle sort order">Newest first ▼</button>
 </div>
 
-<div class="summary-bar">
+<div class="summary-bar cardish">
   <div class="summary-count">Showing <strong id="totalCount">0</strong> gigs</div>
 
-  <!-- Top 10 -laatikko: ohjaimet näkyvät aina; lista piilossa kunnes valinta tehdään -->
-  <div class="group-box" id="groupBox">
+  <div class="group-box cardish" id="groupBox">
     <div class="group-box-header">
       <label for="groupBy">Count by:</label>
       <select id="groupBy">
@@ -117,7 +155,7 @@
   </div>
 </div>
 
-<div class="table-container">
+<div class="table-container cardish">
   <table id="gigTable">
     <thead>
       <tr>
@@ -166,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function(){
       { re:/\bklubi\b/i,                         name:'Klubi' },
       { re:/kaapelitehdas|cable\s*factory/i,     name:'Kaapelitehdas' },
       { re:/provinssi(\s*-?\s*rock|rock)?\b/i,   name:'Provinssi' },
-      // erilliset
+      /* erilliset */
       { re:/hullu\s*poro\s*areena\b/i,           name:'Hullu Poro Areena' },
       { re:/seinäjoen\s*areena\b/i,              name:'Seinäjoen Areena' },
       { re:/nouveau\s*casino\b/i,                name:'Nouveau Casino' },
@@ -280,8 +318,10 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   // Tapahtumat
-  searchInput.addEventListener('input', render);
-  [yearFilter, venueFilter, cityFilter, countryFilter, groupBy].forEach(el => el.addEventListener('change', render));
+  [searchInput, yearFilter, venueFilter, cityFilter, countryFilter, groupBy].forEach(el => {
+    el.addEventListener('input', render);
+    el.addEventListener('change', render);
+  });
   toggleOrderBtn.addEventListener('click', () => {
     sortDir = (sortDir==='desc') ? 'asc' : 'desc';
     localStorage.setItem('kemopetrol_sort_dir', sortDir);
@@ -304,12 +344,9 @@ document.addEventListener('DOMContentLoaded', function(){
     return small && portrait && needsHorizontalScroll() && !hidden;
   }
   function updateOrientationHint(){
-    // Odota, että layout on varmuudella valmis ennen mittausta
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        hint.hidden = !shouldShowHint();
-      });
-    });
+    requestAnimationFrame(()=>{ requestAnimationFrame(()=>{
+      hint.hidden = !shouldShowHint();
+    });});
   }
   close.addEventListener('click', () => {
     localStorage.setItem(hintKey, '1');
