@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kemopetrol — Gig Map</title>
+
+<!-- Leaflet -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  defer
+></script>
+
+<!-- MarkerCluster (helpottaa ison määrän pisteitä) -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+/>
+<script
+  src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"
+  defer
+></script>
+
+<style>
+  :root { --bg:#0b0b0c; --fg:#e0e0e0; --card:#1a1a1a; --border:#444; }
+  html, body { height:100%; margin:0; background:var(--bg); color:var(--fg); }
+  body { display:flex; flex-direction:column; }
+  header {
+    padding:12px 14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    background:#0f0f10; border-bottom:1px solid var(--border);
+  }
+  header h1 { margin:0; font-size:18px; font-weight:700; }
+  header a { color:#9ecbff; text-decoration:none; }
+  .controls { margin-left:auto; display:flex; gap:8px; align-items:center; }
+  select, input, button {
+    background:var(--card); color:var(--fg); border:1px solid var(--border);
+    border-radius:8px; padding:8px 10px; font-size:14px;
+  }
+  #map { flex:1; min-height: 60vh; }
+  .leaflet-popup-content { font: 14px/1.4 system-ui, Arial, sans-serif; }
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: 14px; background: rgba(20,20,22,.9); color: var(--fg);
+    border:1px solid #333; border-radius:10px; padding:10px 14px; font-size:13px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.35); display:none; z-index:9999;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Kemopetrol — Gig Map</h1>
+  <a href="./">← Back to list</a>
+  <div class="controls">
+    <input id="search" type="text" placeholder="Search (venue/city/country)" />
+    <select id="year">
+      <option value="">All years</option>
+    </select>
+    <select id="basemap">
+      <option value="osm" selected>OSM</option>
+      <option value="toner">Toner (BW)</option>
+      <option value="terrain">Terrain</option>
+    </select>
+    <button id="fit">Fit to markers</button>
+  </div>
+</header>
+
+<div id="map" role="region" aria-label="Gig map"></div>
+<div class="toast" id="toast"></div>
+
+<script src="gigs.js"></script>
+<script>
+(function(){
+  // ---------- Helpers ----------
+  const gigs = (window.gigs || []).slice();
+
+  const toast = (msg) => {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.style.display = 'block';
+    clearTimeout(el._t);
+    el._t = setTimeout(()=> el.style.display='none', 2800);
+  };
+
+  // Parse date parts
+  const yearOf = g => (g.date && g.date.split('.').pop()) || '';
+
+  // Build year filter
+  const yearSel = document.getElementById('year');
+  [...new Set(gigs.map(yearOf))].sort((a,b)=>b-a).forEach(y=>{
+    const o=document.createElement('option'); o.value=y; o.textContent=y; yearSel.appendChild(o);
+  });
+
+  // ---------- Map & layers ----------
+  const map = L.map('map', { zoomControl: true, minZoom: 2, worldCopyJump: true });
+
+  const layers = {
+    osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution:'© OpenStreetMap'
+    }),
+    toner: L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {
+      attribution:'Map tiles by Stamen, Data © OpenStreetMap'
+    }),
+    terrain: L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg', {
+      attribution:'Map tiles by Stamen, Data © OpenStreetMap'
+    })
+  };
+  layers.osm.addTo(map);
+
+  const cluster = L.markerClusterGroup({ maxClusterRadius: 45 });
+  map.addLayer(cluster);
+  map.setView([52, 10], 4); // Eurooppa
+
+  // ---------- Geocoding ----------
+  // Käyttää: 1) g.lat/lng jos annettu 2) localStorage-välimuisti 3) Nominatim-haku
+  const CACHE_KEY = 'kemopetrol_geo_cache_v1';
+  const geoCache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+
+  function saveCache(){ localStorage.setItem(CACHE_KEY, JSON.stringify(geoCache)); }
+
+  function placeString(g){
+    // Paras osuma: venue + city + country
+    return [g.venue, g.city, g.country].filter(Boolean).join(', ');
+  }
+
+  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+  async function geocode(q){
+    if (geoCache[q]) return geoCache[q];
+    // Nominatim-kehotus: kevyt käyttö, throttle ~1/s
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}`;
+    try{
+      await sleep(1200);
+      const res = await fetch(url, { headers: { 'Accept-Language': 'en' }});
+      const data = await res.json();
+      if (Array.isArray(data) && data[0]) {
+        const { lat, lon } = data[0];
+        const pt = { lat: +lat, lng: +lon };
+        geoCache[q] = pt; saveCache();
+        return pt;
+      }
+    }catch(e){
+      console.warn('Geocode failed', e);
+    }
+    return null;
+  }
+
+  // ---------- Filtering + plotting ----------
+  const searchEl = document.getElementById('search');
+  const basemapSel = document.getElementById('basemap');
+  const fitBtn = document.getElementById('fit');
+
+  basemapSel.addEventListener('change', ()=>{
+    Object.values(layers).forEach(l=> map.removeLayer(l));
+    (layers[basemapSel.value] || layers.osm).addTo(map);
+  });
+
+  fitBtn.addEventListener('click', ()=> {
+    if (!cluster.getLayers().length) return;
+    map.fitBounds(cluster.getBounds(), { padding:[20,20] });
+  });
+
+  function applyFilters(list){
+    const s = (searchEl.value || '').toLowerCase();
+    const y = yearSel.value;
+    return list.filter(g =>
+      (!y || yearOf(g) === y) &&
+      (
+        g.venue?.toLowerCase().includes(s) ||
+        g.city?.toLowerCase().includes(s) ||
+        g.country?.toLowerCase().includes(s) ||
+        g.date?.includes(s)
+      )
+    );
+  }
+
+  async function plot(){
+    cluster.clearLayers();
+    const rows = applyFilters(gigs);
+
+    let missing = 0, plotted = 0;
+    for (const g of rows){
+      let pt = null;
+
+      if (typeof g.lat === 'number' && typeof g.lng === 'number'){
+        pt = { lat:g.lat, lng:g.lng };
+      } else {
+        const q = placeString(g);
+        pt = geoCache[q] || await geocode(q);
+      }
+
+      if (!pt){ missing++; continue; }
+
+      const m = L.marker(pt);
+      const html = `
+        <div><strong>${g.venue || ''}</strong></div>
+        <div>${g.city || ''}${g.country ? ', ' + g.country : ''}</div>
+        <div style="opacity:.85">${g.date || ''}</div>
+      `;
+      m.bindPopup(html);
+      cluster.addLayer(m);
+      plotted++;
+    }
+
+    if (plotted) {
+      map.fitBounds(cluster.getBounds(), { padding:[20,20] });
+    }
+    if (missing) {
+      toast(`Plotted ${plotted} gigs. ${missing} needed geocoding but couldn't be located automatically.`);
+    } else if (!plotted) {
+      toast('No gigs match filters.');
+    }
+  }
+
+  searchEl.addEventListener('input', plot);
+  yearSel.addEventListener('change', plot);
+
+  // Ensimmäinen piirto
+  // Kun Leaflet-skriptit ovat latautuneet (defer), DOM on jo valmis:
+  plot();
+})();
+</script>
+</body>
+</html>
