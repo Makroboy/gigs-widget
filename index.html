@@ -15,13 +15,39 @@
   .title-line-sub{ font-size:clamp(14px,3.3vw,20px); opacity:.95; }
   .logo-inline{ height:1em; vertical-align:middle; display:inline-block; }
 
+  /* Orientation hint */
+  .orientation-hint{
+    position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%);
+    background: rgba(17,17,17,.95); color: var(--fg);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 14px; display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.35); z-index: 9999;
+    font-size: 14px;
+  }
+  .oh-icon{ font-size: 18px; }
+  .oh-close{
+    margin-left: 6px; background: transparent; border: 0; color: var(--fg);
+    font-size: 18px; line-height: 1; cursor: pointer; padding: 0 4px;
+  }
+
   /* Controls */
   .controls{ display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 14px; align-items:center; justify-content:center; }
-  .filters{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+  /* Grid-pohjainen filter-asettelu mobiilissa */
+  .filters{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    width: min(1100px, 100%);
+  }
+  @media (max-width:420px){
+    .filters{ grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+  }
+
   input, select, button{
     padding:8px 10px; font-size:14px; border-radius:8px; border:1px solid var(--border);
     background:var(--card); color:var(--fg); cursor:pointer;
   }
+  input{ cursor:text; }
   button{ border-color:#555; }
 
   /* Summary + Top list */
@@ -43,6 +69,13 @@
 </style>
 </head>
 <body>
+
+<!-- Orientation/landscape hint -->
+<div id="orientationHint" class="orientation-hint" aria-live="polite" hidden>
+  <span class="oh-icon" aria-hidden="true">⤻</span>
+  Turn your phone to landscape for a better view
+  <button id="orientationClose" class="oh-close" aria-label="Dismiss">×</button>
+</div>
 
 <div class="page-title">
   <div class="title-line-big">
@@ -119,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function(){
   function normalizeVenue(name){
     const original = (name || '').trim();
 
-    // Täsmälliset alias-säännöt (EI geneerisiä areena/casino -yhdistelyjä)
+    // Täsmälliset alias-säännöt (ei geneeristä Areena/Casino -niputusta)
     const aliasRules = [
       { re:/tavastia(-?\s*klubi)?\b/i,           name:'Tavastia' },
       { re:/apollo(\s*live\s*club)?\b/i,         name:'Apollo' },
@@ -134,8 +167,7 @@ document.addEventListener('DOMContentLoaded', function(){
       { re:/\bklubi\b/i,                         name:'Klubi' },
       { re:/kaapelitehdas|cable\s*factory/i,     name:'Kaapelitehdas' },
       { re:/provinssi(\s*-?\s*rock|rock)?\b/i,   name:'Provinssi' },
-
-      // Pidä nämä EROTU – ei niputusta geneerisesti
+      // erot
       { re:/hullu\s*poro\s*areena\b/i,           name:'Hullu Poro Areena' },
       { re:/seinäjoen\s*areena\b/i,              name:'Seinäjoen Areena' },
       { re:/nouveau\s*casino\b/i,                name:'Nouveau Casino' },
@@ -143,24 +175,17 @@ document.addEventListener('DOMContentLoaded', function(){
       { re:/järvenpään\s*casino\b/i,             name:'Järvenpään Casino' },
     ];
 
-    // 1) Suora alias-osuma koko merkkijonoon
-    for (const a of aliasRules) {
-      if (a.re.test(original)) return a.name;
-    }
+    // Suora osuma
+    for (const a of aliasRules) { if (a.re.test(original)) return a.name; }
 
-    // 2) Jos on pilkkuja, poimi tunnettu venue-osa (esim. "Ruma-klubi, Tavastia")
+    // Poimi pilkkuosasta tunnettu venue (esim. "Ruma-klubi, Tavastia")
     const parts = original.split(',').map(p => p.trim()).filter(Boolean);
     if (parts.length > 1) {
-      for (const part of parts) {
-        for (const a of aliasRules) {
-          if (a.re.test(part)) return a.name;
-        }
+      for (const part of parts) for (const a of aliasRules) {
+        if (a.re.test(part)) return a.name;
       }
-      // Ei tunnistettua venuea pilkku-osissa → älä arvaa
-      return original;
+      return original; // ei arvailla
     }
-
-    // 3) Muuten ei normalisointia
     return original;
   }
 
@@ -259,6 +284,7 @@ document.addEventListener('DOMContentLoaded', function(){
     totalCountEl.textContent = filtered.length;
     renderTable(filtered);
     renderTop10(filtered);
+    updateOrientationHint(); // päivitä vinkki kun taulukko piirtyy
   }
 
   // Tapahtumat
@@ -271,8 +297,35 @@ document.addEventListener('DOMContentLoaded', function(){
     render();
   });
 
+  // Orientation hint: näytä vain pienillä ruuduilla, pystyasennossa,
+  // ja jos taulukko vaatii sivuskrollia. Muista käyttäjän sulku.
+  const hint  = document.getElementById('orientationHint');
+  const close = document.getElementById('orientationClose');
+  const hintKey = 'hideOrientationHint';
+  function needsHorizontalScroll(){
+    const c = document.querySelector('.table-container');
+    return c ? (c.scrollWidth > c.clientWidth) : false;
+  }
+  function shouldShowHint(){
+    const small = window.innerWidth < 640;
+    const portrait = window.matchMedia('(orientation: portrait)').matches;
+    const hidden = localStorage.getItem(hintKey) === '1';
+    return small && portrait && needsHorizontalScroll() && !hidden;
+  }
+  function updateOrientationHint(){
+    hint.hidden = !shouldShowHint();
+  }
+  close.addEventListener('click', () => {
+    localStorage.setItem(hintKey, '1');
+    hint.hidden = true;
+  });
+  window.addEventListener('resize', updateOrientationHint);
+  window.addEventListener('orientationchange', updateOrientationHint);
+
   // Init
   render();
+  // varmistus: jos render ehtii ennen layouttia
+  setTimeout(updateOrientationHint, 0);
 });
 </script>
 
