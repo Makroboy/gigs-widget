@@ -284,7 +284,7 @@ window.gigs = [
 
   // 1999
   { date: "12.12.1999", venue: "Cafe Medicin Man", city: "Hyvinkää", country: "Finland" },
-  { date: "30.11.1999, venue: "Jyrki, MTV3, Lasipalatsi", city: "Hämeenlinna", country: "Finland" },
+  { date: "30.11.1999", venue: "Jyrki, MTV3, Lasipalatsi", city: "Helsinki", country: "Finland" },
   { date: "24.11.1999", venue: "Bar 33", city: "Helsinki", country: "Finland" },
   { date: "11.11.1999", venue: "Jump Inn", city: "Helsinki", country: "Finland" },
   { date: "09.10.1999", venue: "Uusi yo-talo", city: "Helsinki", country: "Finland" },
