@@ -27,7 +27,8 @@ window.gigs = [
   { date: "09.10.2021", venue: "Sellosali", city: "Espoo", country: "Finland" },
   { date: "06.08.2021", venue: "Kesärauha", city: "Turku", country: "Finland" },
   { date: "30.07.2021", venue: "Qstock", city: "Oulu", country: "Finland" },
-
+  { date: "15.04.2021", venue: "The Juice Show (Stream)", city: "Helsinki", country: "Finland" },
+  { date: "09.04.2021", venue: "Fafa's Replugged (Stream)", city: "Helsinki", country: "Finland" },
   // 2012
   { date: "16.03.2012", venue: "Hullu Poro Areena", city: "Levi", country: "Finland" },
   { date: "04.02.2012", venue: "House of Rock", city: "Kouvola", country: "Finland" },
