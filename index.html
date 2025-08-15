@@ -27,13 +27,50 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     justify-content: center;
   }
   input, select {
     padding: 6px;
     font-size: 14px;
   }
+
+  .summary-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0 16px;
+    font-size: 14px;
+    opacity: 0.95;
+  }
+  .summary-count {
+    padding: 6px 10px;
+    background: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 8px;
+  }
+  .group-box {
+    width: min(640px, 100%);
+    background: #111113;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 10px;
+  }
+  .group-box-header {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .group-list {
+    margin: 0;
+    padding-left: 18px;
+    max-height: 220px;
+    overflow: auto;
+  }
+
   .table-container {
     overflow-x: auto;
   }
@@ -51,6 +88,7 @@
   th {
     background-color: #1a1a1a;
   }
+  th.num, td.num { width: 1%; text-align: right; }
 </style>
 </head>
 <body>
@@ -62,24 +100,40 @@
 
 <div class="filters">
   <input type="text" id="search" placeholder="Search...">
-  <select id="yearFilter">
-    <option value="">All years</option>
-  </select>
-  <select id="venueFilter">
-    <option value="">All venues / events</option>
-  </select>
-  <select id="cityFilter">
-    <option value="">All cities</option>
-  </select>
-  <select id="countryFilter">
-    <option value="">All countries</option>
-  </select>
+  <select id="yearFilter"><option value="">All years</option></select>
+  <select id="venueFilter"><option value="">All venues / events</option></select>
+  <select id="cityFilter"><option value="">All cities</option></select>
+  <select id="countryFilter"><option value="">All countries</option></select>
+</div>
+
+<div class="summary-bar">
+  <div class="summary-count">Showing <strong id="totalCount">0</strong> gigs</div>
+  <div class="group-box">
+    <div class="group-box-header">
+      <label for="groupBy">Count by:</label>
+      <select id="groupBy">
+        <option value="">— None —</option>
+        <option value="venue">Venue</option>
+        <option value="city">City</option>
+        <option value="country">Country</option>
+        <option value="year">Year</option>
+      </select>
+      <select id="limitBy">
+        <option value="10">Top 10</option>
+        <option value="25">Top 25</option>
+        <option value="100">Top 100</option>
+        <option value="all">Show all</option>
+      </select>
+    </div>
+    <ol class="group-list" id="groupList"></ol>
+  </div>
 </div>
 
 <div class="table-container">
 <table id="gigTable">
   <thead>
     <tr>
+      <th class="num">#</th>
       <th>Date</th>
       <th>Venue / Event</th>
       <th>City</th>
@@ -95,6 +149,7 @@
 (function(){
   const gigs = window.gigs;
 
+  // Uusimmasta vanhimpaan
   gigs.sort((a, b) => {
     const [da, ma, ya] = a.date.split(".");
     const [db, mb, yb] = b.date.split(".");
@@ -107,78 +162,97 @@
   const cityFilter = document.getElementById('cityFilter');
   const countryFilter = document.getElementById('countryFilter');
   const searchInput = document.getElementById('search');
+  const totalCountEl = document.getElementById('totalCount');
 
+  const groupBy = document.getElementById('groupBy');
+  const limitBy = document.getElementById('limitBy');
+  const groupList = document.getElementById('groupList');
+
+  // Täytetään suodattimet
   const years = [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b) => b-a);
-  years.forEach(y => {
-    const opt = document.createElement('option');
-    opt.value = y;
-    opt.textContent = y;
-    yearFilter.appendChild(opt);
-  });
+  years.forEach(y => { const opt = document.createElement('option'); opt.value = y; opt.textContent = y; yearFilter.appendChild(opt); });
 
   const venues = [...new Set(gigs.map(g => g.venue))].sort();
-  venues.forEach(v => {
-    const opt = document.createElement('option');
-    opt.value = v;
-    opt.textContent = v;
-    venueFilter.appendChild(opt);
-  });
+  venues.forEach(v => { const opt = document.createElement('option'); opt.value = v; opt.textContent = v; venueFilter.appendChild(opt); });
 
   const cities = [...new Set(gigs.map(g => g.city))].sort();
-  cities.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c;
-    opt.textContent = c;
-    cityFilter.appendChild(opt);
-  });
+  cities.forEach(c => { const opt = document.createElement('option'); opt.value = c; opt.textContent = c; cityFilter.appendChild(opt); });
 
   const countries = [...new Set(gigs.map(g => g.country))].sort();
-  countries.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c;
-    opt.textContent = c;
-    countryFilter.appendChild(opt);
-  });
+  countries.forEach(c => { const opt = document.createElement('option'); opt.value = c; opt.textContent = c; countryFilter.appendChild(opt); });
 
-  function render() {
-    const searchTerm = searchInput.value.toLowerCase();
-    const yearVal = yearFilter.value;
-    const venueVal = venueFilter.value;
-    const cityVal = cityFilter.value;
-    const countryVal = countryFilter.value;
-
-    tbody.innerHTML = '';
-    gigs
-      .filter(g => 
-        (!yearVal || g.date.endsWith(yearVal)) &&
-        (!venueVal || g.venue === venueVal) &&
-        (!cityVal || g.city === cityVal) &&
-        (!countryVal || g.country === countryVal) &&
-        (
-          g.date.toLowerCase().includes(searchTerm) ||
-          g.venue.toLowerCase().includes(searchTerm) ||
-          g.city.toLowerCase().includes(searchTerm) ||
-          g.country.toLowerCase().includes(searchTerm)
-        )
+  function applyFilters(data){
+    const s = searchInput.value.toLowerCase();
+    const yf = yearFilter.value, vf = venueFilter.value, cf = cityFilter.value, cof = countryFilter.value;
+    return data.filter(g =>
+      (!yf || g.date.endsWith(yf)) &&
+      (!vf || g.venue === vf) &&
+      (!cf || g.city === cf) &&
+      (!cof || g.country === cof) &&
+      (
+        g.date.toLowerCase().includes(s) ||
+        g.venue.toLowerCase().includes(s) ||
+        g.city.toLowerCase().includes(s) ||
+        g.country.toLowerCase().includes(s)
       )
-      .forEach(g => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${g.date}</td>
-          <td>${g.venue}</td>
-          <td>${g.city}</td>
-          <td>${g.country}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+    );
   }
 
-  searchInput.addEventListener('input', render);
-  yearFilter.addEventListener('change', render);
-  venueFilter.addEventListener('change', render);
-  cityFilter.addEventListener('change', render);
-  countryFilter.addEventListener('change', render);
+  function renderTable(rows){
+    tbody.innerHTML = '';
+    rows.forEach((g, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="num">${idx + 1}</td>
+        <td>${g.date}</td>
+        <td>${g.venue}</td>
+        <td>${g.city}</td>
+        <td>${g.country}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
 
+  function renderGrouping(rows){
+    const key = groupBy.value;
+    groupList.innerHTML = '';
+    if(!key){ return; }
+
+    // muodostetaan ryhmäavaimet
+    const getKey = (g) => {
+      if(key === 'year') return g.date.split(".")[2];
+      return g[key];
+    };
+
+    const counts = {};
+    rows.forEach(g => {
+      const k = getKey(g) || '(unknown)';
+      counts[k] = (counts[k] || 0) + 1;
+    });
+
+    const items = Object.entries(counts)
+      .sort((a,b) => b[1] - a[1] || (''+a[0]).localeCompare(''+b[0]));
+
+    let limit = limitBy.value === 'all' ? items.length : parseInt(limitBy.value, 10);
+    items.slice(0, limit).forEach(([name, count]) => {
+      const li = document.createElement('li');
+      li.textContent = `${name}: ${count}`;
+      groupList.appendChild(li);
+    });
+  }
+
+  function render(){
+    const filtered = applyFilters(gigs);
+    totalCountEl.textContent = filtered.length;
+    renderTable(filtered);
+    renderGrouping(filtered);
+  }
+
+  // Tapahtumat
+  searchInput.addEventListener('input', render);
+  [yearFilter, venueFilter, cityFilter, countryFilter, groupBy, limitBy].forEach(el => el.addEventListener('change', render));
+
+  // Alkurenderöinti
   render();
 })();
 </script>
