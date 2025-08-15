@@ -15,6 +15,7 @@ window.gigs = [
   { date: "26.01.2025", venue: "M/S Kesärauha", city: "Viking Grace", country: "Finland" },
 
   // 2022
+  { date: "27.08.2022", venue: "Leipätehdas, (private show)", city: "Helsinki", country: "Finland" },
   { date: "01.07.2022", venue: "Provinssi", city: "Seinäjoki", country: "Finland" },
 
   // 2021
