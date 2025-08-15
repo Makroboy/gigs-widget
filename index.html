@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>Kemopetrol Gig Archive</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
-  :root{ --bg:#0b0b0c; --fg:#e0e0e0; --card:#1a1a1a; --border:#444; }
-  body{ font-family: Arial, sans-serif; background:var(--bg); color:var(--fg); margin:0; padding:20px; }
+  :root { --bg:#0b0b0c; --fg:#e0e0e0; --card:#1a1a1a; --border:#444; }
+  body { font-family: Arial, sans-serif; background:var(--bg); color:var(--fg); margin:0; padding:20px; }
 
-  /* Header */
+  /* Title */
   .page-title{ display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; margin:0 0 10px; }
   .title-line-big{ display:flex; align-items:center; justify-content:center; gap:8px; line-height:1.1;
-    font-size:clamp(28px,5vw,40px); font-weight:700; letter-spacing:.3px; }
+    font-size:clamp(28px,5vw,40px); font-weight:700; }
   .title-line-sub{ font-size:clamp(14px,3.3vw,20px); opacity:.95; }
   .logo-inline{ height:1em; vertical-align:middle; display:inline-block; }
 
@@ -22,14 +22,13 @@
     padding:8px 10px; font-size:14px; border-radius:8px; border:1px solid var(--border);
     background:var(--card); color:var(--fg); cursor:pointer;
   }
-  button{ border-color:#555; }
 
-  /* Summary / top list */
+  /* Summary + Top list */
   .summary-bar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin:8px 0 16px; font-size:14px; }
   .summary-count{ padding:6px 10px; background:var(--card); border:1px solid var(--border); border-radius:8px; }
   .group-box{ width:min(640px,100%); background:#111113; border:1px solid #333; border-radius:10px; padding:10px; }
   .group-box-header{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
-  .group-list{ margin:0; padding-left:20px; max-height:220px; overflow:auto; }
+  .group-list{ margin:0; padding-left:24px; max-height:220px; overflow:auto; list-style:decimal; }
   .hidden{ display:none; }
 
   /* Table */
@@ -46,14 +45,14 @@
 
 <div class="page-title">
   <div class="title-line-big">
-    Kemopetrol <img src="kemopetrol_logo_optimized.png" alt="Kemopetrol logo" class="logo-inline">
+    Kemopetrol <img src="kemopetrol_logo_optimized.png" alt="Kemopetrol logo" class="logo-inline" />
   </div>
   <div class="title-line-sub">Gig Archive</div>
 </div>
 
 <div class="controls">
   <div class="filters">
-    <input type="text" id="search" placeholder="Search...">
+    <input type="text" id="search" placeholder="Search..." />
     <select id="yearFilter"><option value="">All years</option></select>
     <select id="venueFilter"><option value="">All venues / events</option></select>
     <select id="cityFilter"><option value="">All cities</option></select>
@@ -65,24 +64,20 @@
 <div class="summary-bar">
   <div class="summary-count">Showing <strong id="totalCount">0</strong> gigs</div>
 
-  <div class="group-box">
+  <!-- Top list box is hidden by default -->
+  <div class="group-box hidden" id="groupBox">
     <div class="group-box-header">
       <label for="groupBy">Count by:</label>
       <select id="groupBy">
-        <option value="">— None —</option>
+        <option value="" selected>— None —</option>
         <option value="venue">Venue</option>
         <option value="city">City</option>
         <option value="country">Country</option>
         <option value="year">Year</option>
       </select>
-      <select id="limitBy">
-        <option value="10">Top 10</option>
-        <option value="25" selected>Top 25</option>
-        <option value="100">Top 100</option>
-        <option value="all">Show all</option>
-      </select>
     </div>
-    <ol class="group-list hidden" id="groupList"></ol>
+    <!-- Ordered list to guarantee 1…10 numbering -->
+    <ol class="group-list" id="groupList" start="1"></ol>
   </div>
 </div>
 
@@ -114,16 +109,14 @@ document.addEventListener('DOMContentLoaded', function(){
   const countryFilter = document.getElementById('countryFilter');
   const searchInput   = document.getElementById('search');
   const totalCountEl  = document.getElementById('totalCount');
+  const groupBox      = document.getElementById('groupBox');
   const groupBy       = document.getElementById('groupBy');
-  const limitBy       = document.getElementById('limitBy');
   const groupList     = document.getElementById('groupList');
   const toggleOrderBtn= document.getElementById('toggleOrder');
 
-  /* ---------- Venue normalisointi (top-listoille) ---------- */
+  /* --- Venue normalisointi top-listoja varten --- */
   function normalizeVenue(name){
     const original = (name || '').trim();
-
-    // Jos pilkkuja → ota viimeinen osa: "Ruma-klubi, Tavastia" -> "Tavastia"
     const parts = original.split(',').map(p => p.trim()).filter(Boolean);
     let s = parts.length > 1 ? parts[parts.length - 1] : original;
 
@@ -147,33 +140,32 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     return s;
   }
-  /* --------------------------------------------------------- */
 
-  // Järjestys
-  let sortDir = localStorage.getItem('kemopetrol_sort_dir') || 'desc'; // 'desc' = newest first
+  // Sort order
+  let sortDir = localStorage.getItem('kemopetrol_sort_dir') || 'desc';
   const updateToggleLabel = () => toggleOrderBtn.textContent = (sortDir === 'desc') ? 'Newest first ▼' : 'Oldest first ▲';
   updateToggleLabel();
 
-  // Täytä filtterit
+  // Fill filters
   function addOptions(selectEl, values){
     const frag = document.createDocumentFragment();
     values.forEach(v => { const o=document.createElement('option'); o.value=v; o.textContent=v; frag.appendChild(o); });
     selectEl.appendChild(frag);
   }
   addOptions(yearFilter,  [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b)=>b-a));
-  addOptions(venueFilter, [...new Set(gigs.map(g => g.venue))].sort());
+  addOptions(venueFilter, [...new Set(gigs.map(g => g.venue))].sort()); // raw names for partial includes
   addOptions(cityFilter,  [...new Set(gigs.map(g => g.city))].sort());
   addOptions(countryFilter,[...new Set(gigs.map(g => g.country))].sort());
 
-  // Apurit
+  // Helpers
   const parseDate = d => { const [dd,mm,yy]=d.split("."); return new Date(`${yy}-${mm}-${dd}T00:00:00`); };
   const getSorted = rows => {
-    const copy = rows.slice().sort((a,b)=>parseDate(a.date)-parseDate(b.date)); // oldest->newest
-    if (sortDir === 'desc') copy.reverse();                                     // newest->oldest
+    const copy = rows.slice().sort((a,b)=>parseDate(a.date)-parseDate(b.date));
+    if (sortDir === 'desc') copy.reverse();
     return copy;
   };
 
-  // Huom: venueFilter osittainen osuma raw-venueen
+  // Filters (venue: partial match on raw)
   function applyFilters(rows){
     const s  = (searchInput.value || '').toLowerCase();
     const yf = yearFilter.value, vf = venueFilter.value, cf = cityFilter.value, cof = countryFilter.value;
@@ -206,11 +198,17 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
-  function renderGrouping(rows){
+  // Top list: ONLY Top 10
+  function renderTopList(rows){
     const mode = groupBy.value;
-    // Näytä/piilota lista sen mukaan onko mitään valittuna
-    if (!mode) { groupList.classList.add('hidden'); groupList.innerHTML=''; return; }
-    groupList.classList.remove('hidden');
+
+    // Show/hide whole box by selection
+    if (!mode) {
+      groupBox.classList.add('hidden');
+      groupList.innerHTML = '';
+      return;
+    }
+    groupBox.classList.remove('hidden');
 
     const keyFn = (g) => {
       if (mode === 'year')  return g.date.split(".")[2];
@@ -227,13 +225,15 @@ document.addEventListener('DOMContentLoaded', function(){
     const items = Object.entries(counts)
       .sort((a,b)=> b[1]-a[1] || (''+a[0]).localeCompare(''+b[0]));
 
-    const limit = (limitBy.value === 'all') ? items.length : parseInt(limitBy.value,10);
+    const limit = Math.min(10, items.length); // ALWAYS Top 10
     groupList.innerHTML = '';
-    items.slice(0, limit).forEach(([name,count])=>{
+    groupList.setAttribute('start', '1');     // ensure numbering starts at 1
+    for (let i = 0; i < limit; i++){
+      const [name, count] = items[i];
       const li = document.createElement('li');
       li.textContent = `${name}: ${count}`;
       groupList.appendChild(li);
-    });
+    }
   }
 
   function render(){
@@ -241,15 +241,19 @@ document.addEventListener('DOMContentLoaded', function(){
     const filtered = applyFilters(sorted);
     totalCountEl.textContent = filtered.length;
     renderTable(filtered);
-    renderGrouping(filtered);
+    renderTopList(filtered);
   }
 
-  // Tapahtumat
+  // Events
   searchInput.addEventListener('input', render);
-  [yearFilter, venueFilter, cityFilter, countryFilter, groupBy, limitBy].forEach(el => el.addEventListener('change', render));
-  toggleOrderBtn.addEventListener('click', () => { sortDir = (sortDir==='desc')?'asc':'desc'; localStorage.setItem('kemopetrol_sort_dir', sortDir); updateToggleLabel(); render(); });
+  [yearFilter, venueFilter, cityFilter, countryFilter, groupBy].forEach(el => el.addEventListener('change', render));
+  toggleOrderBtn.addEventListener('click', () => {
+    sortDir = (sortDir==='desc') ? 'asc' : 'desc';
+    localStorage.setItem('kemopetrol_sort_dir', sortDir);
+    updateToggleLabel();
+    render();
+  });
 
-  // Init
   render();
 });
 </script>
