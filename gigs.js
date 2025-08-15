@@ -11,11 +11,11 @@ window.gigs = [
   { date: "28.02.2025", venue: "Kulttuurikuppila Brummi", city: "Rauma", country: "Finland" },
   { date: "22.02.2025", venue: "Maxim", city: "Kuopio", country: "Finland" },
   { date: "21.02.2025", venue: "Hyvinkääsali", city: "Hyvinkää", country: "Finland" },
-  { date: "04.02.2025", venue: "Puoli seitsemän, YLE / TV1", city: "Helsinki", country: "Finland" },
+  { date: "04.02.2025", venue: "Puoli seitsemän, YLE TV1 (TV performance)", city: "Helsinki", country: "Finland" },
   { date: "26.01.2025", venue: "M/S Kesärauha", city: "Viking Grace", country: "Finland" },
 
   // 2022
-  { date: "27.08.2022", venue: "Leipätehdas, (private show)", city: "Helsinki", country: "Finland" },
+  { date: "27.08.2022", venue: "Leipätehdas, (Private)", city: "Helsinki", country: "Finland" },
   { date: "01.07.2022", venue: "Provinssi", city: "Seinäjoki", country: "Finland" },
 
   // 2021
@@ -52,6 +52,7 @@ window.gigs = [
   // 2007
   { date: "01.11.2007", venue: "On The Rocks", city: "Helsinki", country: "Finland" },
   { date: "21.09.2007", venue: "Virgin Oil Co.", city: "Helsinki", country: "Finland" },
+  { date: "11.05.2007", venue: "SKT, (private)", city: "Lappeenranta", country: "Finland" },
   { date: "30.04.2007", venue: "Doris Night, Hotelli Lappee", city: "Lappeenranta", country: "Finland" },
   { date: "20.01.2007", venue: "Virgin Oil Co.", city: "Helsinki", country: "Finland" },
 
@@ -74,7 +75,9 @@ window.gigs = [
   { date: "06.04.2006", venue: "Happytime Baari", city: "Savonlinna", country: "Finland" },
   { date: "05.04.2006", venue: "Henry's Pub", city: "Kuopio", country: "Finland" },
   { date: "02.04.2006", venue: "Kulttuuritalo (Simple Minds support)", city: "Helsinki", country: "Finland" },
-  { date: "01.04.2006", venue: "Stockmann", city: "Helsinki", country: "Finland" },
+  { date: "01.04.2006", venue: "Stockmann (unplugged)", city: "Helsinki", country: "Finland" },
+  { date: "30.03.2006", venue: "Tuomas & Juuso Experience, Nelonen (TV performance, unplugged)", city: "Helsinki", country: "Finland" },
+  { date: "29.03.2006", venue: "Pop Klubi, YLE TV2", city: "Helsinki", country: "Finland" },
   { date: "24.03.2006", venue: "Kuudes linja (album release)", city: "Helsinki", country: "Finland" },
 
   // 2005
@@ -123,6 +126,8 @@ window.gigs = [
   { date: "10.04.2004", venue: "Tapiola Garden - Sokos Hotel", city: "Espoo", country: "Finland" },
   { date: "08.04.2004", venue: "YO-talo", city: "Tampere", country: "Finland" },
   { date: "09.04.2004", venue: "Nite Train", city: "Imatra", country: "Finland" },
+  { date: "25.03.2004", venue: "Hyppönen Enbuske Experience, Nelonen (TV performance, unplugged)", city: "Helsinki", country: "Finland" },
+  { date: "20.03.2004", venue: "SubTV Sessions (TV performance, unplugged)", city: "Helsinki", country: "Finland" },
 
   // 2003
   { date: "11.07.2003", venue: "Lappeenranta Festivals", city: "Lappeenranta", country: "Finland" },
@@ -149,8 +154,10 @@ window.gigs = [
   { date: "02.11.2002", venue: "Amarillo", city: "Vaasa", country: "Finland" },
   { date: "26.10.2002", venue: "Red Club", city: "St. Petersburg", country: "Russia" },
   { date: "18.10.2002", venue: "Nevada", city: "Porvoo", country: "Finland" },
+  { date: "12.10.2002", venue: "MTV Nordic Morning Glory", city: "Stockholm", country: "Sweden" },
   { date: "28.09.2002", venue: "Akateeminen Startti", city: "Kuopio", country: "Finland" },
-  { date: "12.09.2002", venue: "MTV3 Live Makasiineilla", city: "Helsinki", country: "Finland" },
+  { date: "12.09.2002", venue: "MTV3 Live Makasiineilla (TV performance)", city: "Helsinki", country: "Finland" },
+  { date: "03.09.2002", venue: "HP Bazaar Camp", city: "Beijing", country: "China" },
   { date: "17.08.2002", venue: "Rock The Globe", city: "Kuopio", country: "Finland" },
   { date: "10.08.2002", venue: "Välipuistorock", city: "Lapua", country: "Finland" },
   { date: "09.08.2002", venue: "Kulttuurikeskus Poleeni", city: "Pieksämäki", country: "Finland" },
@@ -161,6 +168,7 @@ window.gigs = [
   { date: "13.07.2002", venue: "Aitoon Kirkastusjuhlat", city: "Aitoo", country: "Finland" },
   { date: "12.07.2002", venue: "Jyväskylän Kesä", city: "Jyväskylä", country: "Finland" },
   { date: "07.07.2002", venue: "Ruisrock", city: "Turku", country: "Finland" },
+  { date: "01.07.2002", venue: "Popsmart / YLE FST (TV performance)", city: "Helsinki", country: "Finland" },
   { date: "14.06.2002", venue: "Feenix", city: "Turku", country: "Finland" },
   { date: "12.06.2002", venue: "Kaivarin Kesäkonsertti", city: "Helsinki", country: "Finland" },
   { date: "08.06.2002", venue: "Kaisaniemi Pop", city: "Helsinki", country: "Finland" },
@@ -171,18 +179,18 @@ window.gigs = [
   { date: "09.05.2002", venue: "Vaakuna", city: "Mikkeli", country: "Finland" },
   { date: "08.05.2002", venue: "Rytmikatti", city: "Kouvola", country: "Finland" },
   { date: "07.05.2002", venue: "Lappee", city: "Lappeenranta", country: "Finland" },
-  { date: "01.05.2002", venue: "Yokotai, YLE / TV1", city: "Helsinki", country: "Finland" },
+  { date: "01.05.2002", venue: "Yokotai, YLE TV1 (TV performance)", city: "Helsinki", country: "Finland" },
   { date: "26.04.2002", venue: "Tivoli", city: "Rovaniemi", country: "Finland" },
   { date: "25.04.2002", venue: "Gina", city: "Raahe", country: "Finland" },
   { date: "24.04.2002", venue: "Foxia", city: "Oulu", country: "Finland" },
-  { date: "22.04.2002", venue: "Studio B - live, Yle / Radiomafia", city: "Helsinki", country: "Finland" },
+  { date: "22.04.2002", venue: "Studio B - live, Yle / Radiomafia (TV performance)", city: "Helsinki", country: "Finland" },
   { date: "20.04.2002", venue: "Lutakko", city: "Jyväskylä", country: "Finland" },
   { date: "19.04.2002", venue: "Yo-talo", city: "Tampere", country: "Finland" },
   { date: "18.04.2002", venue: "Kåren", city: "Turku", country: "Finland" },
   { date: "17.04.2002", venue: "Paradise Garden", city: "Salo", country: "Finland" },
   { date: "13.04.2002", venue: "Raumanlinna", city: "Rauma", country: "Finland" },
   { date: "09.04.2002", venue: "Kimmel", city: "Joensuu", country: "Finland" },
-  { date: "03.04.2002", venue: "Vekaranjärven varuskunta", city: "Valkeala", country: "Finland" },
+  { date: "03.04.2002", venue: "Vekaranjärven sotilaskoti", city: "Valkeala", country: "Finland" },
   { date: "23.03.2002", venue: "Hotelli Ylivieska", city: "Ylivieska", country: "Finland" },
 
   // 2001
@@ -206,7 +214,7 @@ window.gigs = [
   { date: "11.04.2001", venue: "Barrumba", city: "Torino", country: "Italy" },
   { date: "10.04.2001", venue: "Tenax", city: "Firenze", country: "Italy" },
   { date: "31.03.2001", venue: "Network, Hippos-halli", city: "Jyväskylä", country: "Finland" },
-  { date: "28.03.2001", venue: "Valkeala", city: "Valkeala", country: "Finland" },
+  { date: "28.03.2001", venue: "Vekaranjärven sotilaskoti", city: "Valkeala", country: "Finland" },
   { date: "24.03.2001", venue: "Rantasipi", city: "Hyvinkää", country: "Finland" },
   { date: "03.03.2001", venue: "Polideportivo Principe Felipe", city: "Zaragoza", country: "Spain" },
   { date: "02.03.2001", venue: "Salamandra", city: "Valladolid", country: "Spain" },
@@ -272,27 +280,29 @@ window.gigs = [
   { date: "15.04.2000", venue: "Onnenpäivät", city: "Imatra", country: "Finland" },
   { date: "14.04.2000", venue: "Kuntotalo", city: "Mikkeli", country: "Finland" },
   { date: "13.04.2000", venue: "City-Anttila Megastore", city: "Helsinki", country: "Finland" },
-  { date: "10.04.2000", venue: "Upteekki, YLE / Radiomafia", city: "Helsinki", country: "Finland" },
+  { date: "10.04.2000", venue: "Upteekki, YLE / Radiomafia (Radio performance, unplugged)", city: "Helsinki", country: "Finland" },
   { date: "31.03.2000", venue: "Yo-talo", city: "Tampere", country: "Finland" },
   { date: "03.03.2000", venue: "Nosturi", city: "Helsinki", country: "Finland" },
   { date: "25.02.2000", venue: "Bella Donna", city: "Seinäjoki", country: "Finland" },
   { date: "04.02.2000", venue: "Kåren", city: "Turku", country: "Finland" },
-  { date: "30.01.2000", venue: "DDR, YLE / Radio Extrem", city: "Helsinki", country: "Finland" },
+  { date: "30.01.2000", venue: "DDR, YLE / Radio Extrem (Radio performance)", city: "Helsinki", country: "Finland" },
   { date: "26.01.2000", venue: "Kipsari", city: "Helsinki", country: "Finland" },
   { date: "22.01.2000", venue: "Gloria", city: "Helsinki", country: "Finland" },
   { date: "09.01.2000", venue: "Jump Inn", city: "Helsinki", country: "Finland" },
 
   // 1999
   { date: "12.12.1999", venue: "Cafe Medicin Man", city: "Hyvinkää", country: "Finland" },
-  { date: "30.11.1999", venue: "Jyrki, MTV3, Lasipalatsi", city: "Helsinki", country: "Finland" },
+  { date: "30.11.1999", venue: "Jyrki, MTV3, Lasipalatsi (TV performance)", city: "Helsinki", country: "Finland" },
+  { date: "25.11.1999", venue: "Kaapelitehdas, (private)", city: "Helsinki", country: "Finland" },
   { date: "24.11.1999", venue: "Bar 33", city: "Helsinki", country: "Finland" },
   { date: "11.11.1999", venue: "Jump Inn", city: "Helsinki", country: "Finland" },
+  { date: "24.10.1999", venue: "Vuosaaren telakka, (private)", city: "Helsinki", country: "Finland" },
   { date: "09.10.1999", venue: "Uusi yo-talo", city: "Helsinki", country: "Finland" },
   { date: "11.09.1999", venue: "Saunabar", city: "Helsinki", country: "Finland" },
   { date: "26.08.1999", venue: "Kahvila Piritta", city: "Helsinki", country: "Finland" },
   { date: "17.06.1999", venue: "Blue Room", city: "Helsinki", country: "Finland" },
   { date: "04.06.1999", venue: "Lepakko", city: "Helsinki", country: "Finland" },
-  { date: "03.05.1999", venue: "Gloria", city: "Helsinki", country: "Finland" },
-  { date: "09.04.1999", venue: "Kettutien nuorisotalo", city: "Helsinki", country: "Finland" },
+  { date: "03.05.1999", venue: "Ääni ja vimma, Gloria", city: "Helsinki", country: "Finland" },
+  { date: "09.04.1999", venue: "Ääni ja vimma, Kettutien nuorisotalo", city: "Helsinki", country: "Finland" },
   { date: "18.03.1999", venue: "Espoo–Vantaa Polytechnic", city: "Espoo", country: "Finland" }
 ];
