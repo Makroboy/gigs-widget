@@ -22,6 +22,7 @@
     padding:8px 10px; font-size:14px; border-radius:8px; border:1px solid var(--border);
     background:var(--card); color:var(--fg); cursor:pointer;
   }
+  button{ border-color:#555; }
 
   /* Summary + Top list */
   .summary-bar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin:8px 0 16px; font-size:14px; }
@@ -64,8 +65,8 @@
 <div class="summary-bar">
   <div class="summary-count">Showing <strong id="totalCount">0</strong> gigs</div>
 
-  <!-- Top list box is hidden by default -->
-  <div class="group-box hidden" id="groupBox">
+  <!-- Top 10 -laatikko: ohjaimet näkyvät aina; lista piilossa kunnes valinta tehdään -->
+  <div class="group-box" id="groupBox">
     <div class="group-box-header">
       <label for="groupBy">Count by:</label>
       <select id="groupBy">
@@ -75,9 +76,10 @@
         <option value="country">Country</option>
         <option value="year">Year</option>
       </select>
+      <span>(Top 10)</span>
     </div>
-    <!-- Ordered list to guarantee 1…10 numbering -->
-    <ol class="group-list" id="groupList" start="1"></ol>
+    <!-- Tilattu lista takaa 1…10 numeroinnin -->
+    <ol class="group-list hidden" id="groupList" start="1"></ol>
   </div>
 </div>
 
@@ -109,63 +111,84 @@ document.addEventListener('DOMContentLoaded', function(){
   const countryFilter = document.getElementById('countryFilter');
   const searchInput   = document.getElementById('search');
   const totalCountEl  = document.getElementById('totalCount');
-  const groupBox      = document.getElementById('groupBox');
   const groupBy       = document.getElementById('groupBy');
   const groupList     = document.getElementById('groupList');
   const toggleOrderBtn= document.getElementById('toggleOrder');
 
-  /* --- Venue normalisointi top-listoja varten --- */
+  /* --- Venue normalisointi Top 10 -laskentaa varten --- */
   function normalizeVenue(name){
     const original = (name || '').trim();
-    const parts = original.split(',').map(p => p.trim()).filter(Boolean);
-    let s = parts.length > 1 ? parts[parts.length - 1] : original;
 
-    const aliases = [
-      { re:/tavastia(-?klubi)?/i,              name:'Tavastia' },
-      { re:/apollo(\s*live\s*club)?$/i,        name:'Apollo' },
-      { re:/midnight\s*party\s*planet/i,       name:'Midnight Party Planet' },
-      { re:/provinssi(\s*-?\s*rock|rock)?/i,   name:'Provinssi' },
-      { re:/(kaapelitehdas|cable\s*factory)/i, name:'Kaapelitehdas' },
-      { re:/yo[\-\s]?talo/i,                   name:'Yo-talo' },
-      { re:/henry'?s\s*pub/i,                  name:"Henry's Pub" },
-      { re:/kåren/i,                           name:'Kåren' },
-      { re:/nosturi/i,                         name:'Nosturi' },
-      { re:/dbtl/i,                            name:'DBTL' },
-      { re:/kerubi/i,                          name:'Kerubi' },
-      { re:/lutakko/i,                         name:'Lutakko' },
-      { re:/virgin\s*oil/i,                    name:'Virgin Oil Co.' }
+    // Täsmälliset alias-säännöt (EI geneerisiä areena/casino -yhdistelyjä)
+    const aliasRules = [
+      { re:/tavastia(-?\s*klubi)?\b/i,           name:'Tavastia' },
+      { re:/apollo(\s*live\s*club)?\b/i,         name:'Apollo' },
+      { re:/yo[\-\s]?talo\b/i,                   name:'Yo-talo' },
+      { re:/nosturi\b/i,                         name:'Nosturi' },
+      { re:/virgin\s*oil\s*co\.?\b/i,            name:'Virgin Oil Co.' },
+      { re:/henry'?s\s*pub\b/i,                  name:"Henry's Pub" },
+      { re:/kåren\b/i,                           name:'Kåren' },
+      { re:/lutakko\b/i,                         name:'Lutakko' },
+      { re:/kerubi\b/i,                          name:'Kerubi' },
+      { re:/dbtl\b/i,                            name:'DBTL' },
+      { re:/\bklubi\b/i,                         name:'Klubi' },
+      { re:/kaapelitehdas|cable\s*factory/i,     name:'Kaapelitehdas' },
+      { re:/provinssi(\s*-?\s*rock|rock)?\b/i,   name:'Provinssi' },
+
+      // Pidä nämä EROTU – ei niputusta geneerisesti
+      { re:/hullu\s*poro\s*areena\b/i,           name:'Hullu Poro Areena' },
+      { re:/seinäjoen\s*areena\b/i,              name:'Seinäjoen Areena' },
+      { re:/nouveau\s*casino\b/i,                name:'Nouveau Casino' },
+      { re:/hangon\s*casino\b/i,                 name:'Hangon Casino' },
+      { re:/järvenpään\s*casino\b/i,             name:'Järvenpään Casino' },
     ];
-    for (const a of aliases) {
-      if (a.re.test(original) || a.re.test(s)) return a.name;
+
+    // 1) Suora alias-osuma koko merkkijonoon
+    for (const a of aliasRules) {
+      if (a.re.test(original)) return a.name;
     }
-    return s;
+
+    // 2) Jos on pilkkuja, poimi tunnettu venue-osa (esim. "Ruma-klubi, Tavastia")
+    const parts = original.split(',').map(p => p.trim()).filter(Boolean);
+    if (parts.length > 1) {
+      for (const part of parts) {
+        for (const a of aliasRules) {
+          if (a.re.test(part)) return a.name;
+        }
+      }
+      // Ei tunnistettua venuea pilkku-osissa → älä arvaa
+      return original;
+    }
+
+    // 3) Muuten ei normalisointia
+    return original;
   }
 
-  // Sort order
-  let sortDir = localStorage.getItem('kemopetrol_sort_dir') || 'desc';
+  // Järjestys
+  let sortDir = localStorage.getItem('kemopetrol_sort_dir') || 'desc'; // 'desc' = newest first
   const updateToggleLabel = () => toggleOrderBtn.textContent = (sortDir === 'desc') ? 'Newest first ▼' : 'Oldest first ▲';
   updateToggleLabel();
 
-  // Fill filters
+  // Täytä filtterit
   function addOptions(selectEl, values){
     const frag = document.createDocumentFragment();
     values.forEach(v => { const o=document.createElement('option'); o.value=v; o.textContent=v; frag.appendChild(o); });
     selectEl.appendChild(frag);
   }
   addOptions(yearFilter,  [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b)=>b-a));
-  addOptions(venueFilter, [...new Set(gigs.map(g => g.venue))].sort()); // raw names for partial includes
+  addOptions(venueFilter, [...new Set(gigs.map(g => g.venue))].sort()); // raw nimet → includes toimii
   addOptions(cityFilter,  [...new Set(gigs.map(g => g.city))].sort());
   addOptions(countryFilter,[...new Set(gigs.map(g => g.country))].sort());
 
-  // Helpers
+  // Apurit
   const parseDate = d => { const [dd,mm,yy]=d.split("."); return new Date(`${yy}-${mm}-${dd}T00:00:00`); };
   const getSorted = rows => {
-    const copy = rows.slice().sort((a,b)=>parseDate(a.date)-parseDate(b.date));
-    if (sortDir === 'desc') copy.reverse();
+    const copy = rows.slice().sort((a,b)=>parseDate(a.date)-parseDate(b.date)); // oldest->newest
+    if (sortDir === 'desc') copy.reverse();                                     // newest->oldest
     return copy;
   };
 
-  // Filters (venue: partial match on raw)
+  // Filtterit (venue: osittaisosuma raw-venueen)
   function applyFilters(rows){
     const s  = (searchInput.value || '').toLowerCase();
     const yf = yearFilter.value, vf = venueFilter.value, cf = cityFilter.value, cof = countryFilter.value;
@@ -198,17 +221,11 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
-  // Top list: ONLY Top 10
-  function renderTopList(rows){
+  // Top 10: lista piilossa kunnes valitaan "Count by"
+  function renderTop10(rows){
     const mode = groupBy.value;
-
-    // Show/hide whole box by selection
-    if (!mode) {
-      groupBox.classList.add('hidden');
-      groupList.innerHTML = '';
-      return;
-    }
-    groupBox.classList.remove('hidden');
+    if (!mode) { groupList.classList.add('hidden'); groupList.innerHTML=''; return; }
+    groupList.classList.remove('hidden');
 
     const keyFn = (g) => {
       if (mode === 'year')  return g.date.split(".")[2];
@@ -225,10 +242,10 @@ document.addEventListener('DOMContentLoaded', function(){
     const items = Object.entries(counts)
       .sort((a,b)=> b[1]-a[1] || (''+a[0]).localeCompare(''+b[0]));
 
-    const limit = Math.min(10, items.length); // ALWAYS Top 10
     groupList.innerHTML = '';
-    groupList.setAttribute('start', '1');     // ensure numbering starts at 1
-    for (let i = 0; i < limit; i++){
+    groupList.setAttribute('start','1'); // numerointi 1…10
+    const limit = Math.min(10, items.length);
+    for (let i=0; i<limit; i++){
       const [name, count] = items[i];
       const li = document.createElement('li');
       li.textContent = `${name}: ${count}`;
@@ -241,10 +258,10 @@ document.addEventListener('DOMContentLoaded', function(){
     const filtered = applyFilters(sorted);
     totalCountEl.textContent = filtered.length;
     renderTable(filtered);
-    renderTopList(filtered);
+    renderTop10(filtered);
   }
 
-  // Events
+  // Tapahtumat
   searchInput.addEventListener('input', render);
   [yearFilter, venueFilter, cityFilter, countryFilter, groupBy].forEach(el => el.addEventListener('change', render));
   toggleOrderBtn.addEventListener('click', () => {
@@ -254,6 +271,7 @@ document.addEventListener('DOMContentLoaded', function(){
     render();
   });
 
+  // Init
   render();
 });
 </script>
