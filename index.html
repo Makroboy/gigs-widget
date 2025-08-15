@@ -7,16 +7,14 @@
 <style>
   :root { --bg:#0b0b0c; --fg:#e0e0e0; --card:#1a1a1a; --border:#444; }
   body { font-family: Arial, sans-serif; background:var(--bg); color:var(--fg); margin:0; padding:20px; }
-
-  /* hidden must always hide */
   [hidden]{ display:none !important; }
 
-  /* ===== Fixed background image + dim (Option A) ===== */
+  /* ===== Fixed background image + lighter dim ===== */
   .bg-image{
     position: fixed; inset: 0; z-index: -2;
-    background-image: url('KEMOUKKO-FINAL-Kemopetrol-A2+2mmbleedSOME.jpeg'); /* <- laita tämä kuva samaan kansioon */
+    background-image: url('KEMOUKKO-FINAL-Kemopetrol-A2+2mmbleedSOME.jpeg'); /* vaihda polku tarvittaessa */
     background-size: cover;
-    background-position: center 68%;   /* siirtää fokusta hieman alemmas, jotta kuvan “Kemopetrol”-teksti ei kilpaile otsikon kanssa */
+    background-position: center 85%;   /* kuvaa alemmaksi */
     background-repeat: no-repeat;
     filter: saturate(0.95);
   }
@@ -24,19 +22,19 @@
     position: fixed; inset: 0; z-index: -1;
     background:
       linear-gradient(180deg,
-        rgba(0,0,0,.85) 0%,    /* yläreuna tummempi */
-        rgba(0,0,0,.65) 32%,
-        rgba(0,0,0,.58) 55%,
-        rgba(0,0,0,.62) 100%
+        rgba(0,0,0,.65) 0%,    /* kevyempi tummennus */
+        rgba(0,0,0,.45) 32%,
+        rgba(0,0,0,.38) 55%,
+        rgba(0,0,0,.42) 100%
       ),
       radial-gradient(120% 70% at 50% 60%,
         rgba(0,0,0,0) 0%,
-        rgba(0,0,0,.32) 100%
+        rgba(0,0,0,.18) 100%
       );
     background-blend-mode: multiply;
   }
 
-  /* ===== Card-ish containers on top of the image ===== */
+  /* Korttimaiset kontit kuvan päällä */
   .cardish{
     background: rgba(20,20,22,.70);
     border: 1px solid rgba(255,255,255,.12);
@@ -329,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function(){
     render();
   });
 
-  // Orientation hint (v2: uusi avain + tupla-RAF mittaus)
+  // Orientation hint (v2 + tupla-RAF mittaus)
   const hint  = document.getElementById('orientationHint');
   const close = document.getElementById('orientationClose');
   const hintKey = 'hideOrientationHint_v2';
