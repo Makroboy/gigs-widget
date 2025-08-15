@@ -1,7 +1,7 @@
 window.gigs = [
   // 2025
   { date: "09.08.2025", venue: "Tampere City Festival", city: "Tampere", country: "Finland" },
-  { date: "01.08.2025", venue: "Tavastia-klubi", city: "Helsinki", country: "Finland" },
+  { date: "01.08.2025", venue: "Tavastia", city: "Helsinki", country: "Finland" },
   { date: "05.07.2025", venue: "Ilovaari", city: "Joensuu", country: "Finland" },
   { date: "14.06.2025", venue: "Helsinki City Festival", city: "Helsinki", country: "Finland" },
   { date: "14.03.2025", venue: "Pensselitehdas", city: "Porvoo", country: "Finland" },
@@ -31,7 +31,7 @@ window.gigs = [
   // 2012
   { date: "16.03.2012", venue: "Hullu Poro Areena", city: "Levi", country: "Finland" },
   { date: "04.02.2012", venue: "House of Rock", city: "Kouvola", country: "Finland" },
-  { date: "03.02.2012", venue: "Tavastia-klubi", city: "Helsinki", country: "Finland" },
+  { date: "03.02.2012", venue: "Tavastia", city: "Helsinki", country: "Finland" },
 
   // 2011
   { date: "26.11.2011", venue: "Dyyni", city: "Kalajoki", country: "Finland" },
