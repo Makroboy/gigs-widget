@@ -7,8 +7,8 @@
 <style>
   :root { --fg:#e0e0e0; --card:#1a1a1a; --border:#444; }
 
-  /* Body taustakuvalla */
-  body {
+  /* Body taustakuvalla (fixed) */
+  body{
     font-family: Arial, sans-serif;
     color: var(--fg);
     margin: 0;
@@ -18,131 +18,46 @@
     background-size: cover;
     position: relative;
   }
-
-  /* Tumma overlay 30% */
-  body::before {
-    content: "";
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.3);
+  /* 30% tumma overlay */
+  body::before{
+    content:"";
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.30);
     z-index: -1;
   }
 
-  /* Sisältö */
-  .page-title {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    text-align: center;
-    margin: 0 0 10px;
-  }
-  .title-line-big {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    line-height: 1.1;
-    font-size: clamp(28px,5vw,40px);
-    font-weight: 700;
-  }
-  .title-line-sub {
-    font-size: clamp(14px,3.3vw,20px);
-    opacity: .95;
-  }
-  .logo-inline {
-    height: 1em;
-    vertical-align: middle;
-    display: inline-block;
-  }
+  /* Otsikko */
+  .page-title{ display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; margin:0 0 10px; }
+  .title-line-big{ display:flex; align-items:center; justify-content:center; gap:8px; line-height:1.1; font-size:clamp(28px,5vw,40px); font-weight:700; }
+  .title-line-sub{ font-size:clamp(14px,3.3vw,20px); opacity:.95; }
+  .logo-inline{ height:1em; vertical-align:middle; display:inline-block; }
 
-  .controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 12px 0 14px;
-    align-items: center;
-    justify-content: center;
+  /* Kontrollit */
+  .controls{ display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 14px; align-items:center; justify-content:center; }
+  .filters{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+  input, select, button{
+    padding:8px 10px; font-size:14px; border-radius:8px; border:1px solid var(--border);
+    background:var(--card); color:var(--fg); cursor:pointer;
   }
-  .filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-  }
-  input, select, button {
-    padding: 8px 10px;
-    font-size: 14px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--card);
-    color: var(--fg);
-    cursor: pointer;
-  }
-  button { border-color: #555; }
+  input{ cursor:text; }
+  button{ border-color:#555; }
 
-  .summary-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    margin: 8px 0 16px;
-    font-size: 14px;
-  }
-  .summary-count {
-    padding: 6px 10px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-  }
-  .group-box {
-    width: min(640px,100%);
-    background: rgba(17,17,19,0.85);
-    border: 1px solid #333;
-    border-radius: 10px;
-    padding: 10px;
-  }
-  .group-box-header {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-  .group-list {
-    margin: 0;
-    padding-left: 24px;
-    max-height: 220px;
-    overflow: auto;
-    list-style: decimal;
-  }
-  .hidden { display: none; }
+  /* Summary + Top list */
+  .summary-bar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin:8px 0 16px; font-size:14px; }
+  .summary-count{ padding:6px 10px; background:var(--card); border:1px solid var(--border); border-radius:8px; }
+  .group-box{ width:min(640px,100%); background:rgba(17,17,19,.85); border:1px solid #333; border-radius:10px; padding:10px; }
+  .group-box-header{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+  .group-list{ margin:0; padding-left:24px; max-height:220px; overflow:auto; list-style:decimal; }
+  .hidden{ display:none; }
 
-  .table-container { overflow-x: auto; }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 600px;
-    background: rgba(26,26,26,0.85);
-  }
-  th, td {
-    padding: 8px;
-    border-bottom: 1px solid var(--border);
-    text-align: left;
-    white-space: nowrap;
-  }
-  th {
-    background: rgba(26,26,26,0.95);
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
-  th.num, td.num { width: 1%; text-align: right; }
+  /* Taulukko */
+  .table-container{ overflow-x:auto; }
+  table{ width:100%; border-collapse:collapse; min-width:600px; background:rgba(26,26,26,.85); }
+  th, td{ padding:8px; border-bottom:1px solid var(--border); text-align:left; white-space:nowrap; }
+  th{ background:rgba(26,26,26,.95); position:sticky; top:0; z-index:1; }
+  th.num, td.num{ width:1%; text-align:right; }
 
-  @media (max-width:500px){
-    body { padding: 16px; }
-    input, select, button { padding: 8px; font-size: 13px; }
-  }
+  @media (max-width:500px){ body{ padding:16px; } input, select, button{ padding:8px; font-size:13px; } }
 </style>
 </head>
 <body>
@@ -168,7 +83,7 @@
 <div class="summary-bar">
   <div class="summary-count">Showing <strong id="totalCount">0</strong> gigs</div>
 
-  <div class="group-box" id="groupBox">
+  <div class="group-box">
     <div class="group-box-header">
       <label for="groupBy">Count by:</label>
       <select id="groupBy">
@@ -199,10 +114,173 @@
   </table>
 </div>
 
-<script src="gigs.js" defer></script>
-<script defer>
-/* Sama JavaScript kuin aiemmin, ei muutoksia */
-</script>
+<!-- 1) gigs-data sisään ENNEN pääskriptiä -->
+<script src="gigs.js"></script>
 
+<!-- 2) Pääskripti -->
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const gigs = (window.gigs || []).slice();
+
+  // DOM
+  const tbody         = document.querySelector('#gigTable tbody');
+  const yearFilter    = document.getElementById('yearFilter');
+  const venueFilter   = document.getElementById('venueFilter');
+  const cityFilter    = document.getElementById('cityFilter');
+  const countryFilter = document.getElementById('countryFilter');
+  const searchInput   = document.getElementById('search');
+  const totalCountEl  = document.getElementById('totalCount');
+  const groupBy       = document.getElementById('groupBy');
+  const groupList     = document.getElementById('groupList');
+  const toggleOrderBtn= document.getElementById('toggleOrder');
+
+  /* --- Venue-normalisointi Top 10:lle (alias-säännöt) --- */
+  function normalizeVenue(name){
+    const original = (name || '').trim();
+    const aliasRules = [
+      { re:/tavastia(-?\s*klubi)?\b/i,           name:'Tavastia' },
+      { re:/apollo(\s*live\s*club)?\b/i,         name:'Apollo' },
+      { re:/yo[\-\s]?talo\b/i,                   name:'Yo-talo' },
+      { re:/nosturi\b/i,                         name:'Nosturi' },
+      { re:/virgin\s*oil\s*co\.?\b/i,            name:'Virgin Oil Co.' },
+      { re:/henry'?s\s*pub\b/i,                  name:"Henry's Pub" },
+      { re:/kåren\b/i,                           name:'Kåren' },
+      { re:/lutakko\b/i,                         name:'Lutakko' },
+      { re:/kerubi\b/i,                          name:'Kerubi' },
+      { re:/dbtl\b/i,                            name:'DBTL' },
+      { re:/\bklubi\b/i,                         name:'Klubi' },
+      { re:/kaapelitehdas|cable\s*factory/i,     name:'Kaapelitehdas' },
+      { re:/provinssi(\s*-?\s*rock|rock)?\b/i,   name:'Provinssi' },
+      /* erilliset, ei niputeta */
+      { re:/hullu\s*poro\s*areena\b/i,           name:'Hullu Poro Areena' },
+      { re:/seinäjoen\s*areena\b/i,              name:'Seinäjoen Areena' },
+      { re:/nouveau\s*casino\b/i,                name:'Nouveau Casino' },
+      { re:/hangon\s*casino\b/i,                 name:'Hangon Casino' },
+      { re:/järvenpään\s*casino\b/i,             name:'Järvenpään Casino' },
+    ];
+    for (const a of aliasRules) if (a.re.test(original)) return a.name;
+
+    // Jos on pilkkuja (esim. "Ruma-klubi, Tavastia"), tunnista tunnettu osa
+    const parts = original.split(',').map(p => p.trim()).filter(Boolean);
+    if (parts.length > 1){
+      for (const part of parts) for (const a of aliasRules){
+        if (a.re.test(part)) return a.name;
+      }
+      return original;
+    }
+    return original;
+  }
+
+  // Järjestys
+  let sortDir = localStorage.getItem('kemopetrol_sort_dir') || 'desc'; // 'desc' = newest first
+  const updateToggleLabel = () => toggleOrderBtn.textContent = (sortDir==='desc') ? 'Newest first ▼' : 'Oldest first ▲';
+  updateToggleLabel();
+
+  // Täytä filtterit
+  function addOptions(selectEl, values){
+    const frag = document.createDocumentFragment();
+    values.forEach(v => { const o=document.createElement('option'); o.value=v; o.textContent=v; frag.appendChild(o); });
+    selectEl.appendChild(frag);
+  }
+  addOptions(yearFilter,  [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b)=>b-a));
+  addOptions(venueFilter, [...new Set(gigs.map(g => g.venue))].sort()); // raw-nimet → osittainen haku toimii
+  addOptions(cityFilter,  [...new Set(gigs.map(g => g.city))].sort());
+  addOptions(countryFilter,[...new Set(gigs.map(g => g.country))].sort());
+
+  // Apurit
+  const parseDate = d => { const [dd,mm,yy]=d.split("."); return new Date(`${yy}-${mm}-${dd}T00:00:00`); };
+  const getSorted = rows => {
+    const copy = rows.slice().sort((a,b)=>parseDate(a.date)-parseDate(b.date)); // oldest->newest
+    if (sortDir === 'desc') copy.reverse();                                     // newest->oldest
+    return copy;
+  };
+
+  // Filtterit (venue: osittaisosuma raw-venueen)
+  function applyFilters(rows){
+    const s  = (searchInput.value || '').toLowerCase();
+    const yf = yearFilter.value, vf = venueFilter.value, cf = cityFilter.value, cof = countryFilter.value;
+    return rows.filter(g =>
+      (!yf || g.date.endsWith(yf)) &&
+      (!vf || g.venue.toLowerCase().includes(vf.toLowerCase())) &&
+      (!cf || g.city === cf) &&
+      (!cof || g.country === cof) &&
+      (
+        g.date.toLowerCase().includes(s) ||
+        g.venue.toLowerCase().includes(s) ||
+        g.city.toLowerCase().includes(s) ||
+        g.country.toLowerCase().includes(s)
+      )
+    );
+  }
+
+  function renderTable(rows){
+    tbody.innerHTML = '';
+    rows.forEach((g, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="num">${idx + 1}</td>
+        <td>${g.date}</td>
+        <td>${g.venue}</td>
+        <td>${g.city}</td>
+        <td>${g.country}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Top 10: näkyy vain kun valinta tehty
+  function renderTop10(rows){
+    const mode = groupBy.value;
+    if (!mode){ groupList.classList.add('hidden'); groupList.innerHTML=''; return; }
+    groupList.classList.remove('hidden');
+
+    const keyFn = (g) => {
+      if (mode === 'year')  return g.date.split(".")[2];
+      if (mode === 'venue') return normalizeVenue(g.venue);
+      return g[mode]; // city / country
+    };
+
+    const counts = {};
+    rows.forEach(g => {
+      const k = keyFn(g) || '(unknown)';
+      counts[k] = (counts[k] || 0) + 1;
+    });
+
+    const items = Object.entries(counts)
+      .sort((a,b)=> b[1]-a[1] || (''+a[0]).localeCompare(''+b[0]));
+
+    groupList.innerHTML = '';
+    groupList.setAttribute('start','1'); // varmistaa 1…10 numeroinnin
+    const limit = Math.min(10, items.length);
+    for (let i=0; i<limit; i++){
+      const [name, count] = items[i];
+      const li = document.createElement('li');
+      li.textContent = `${name}: ${count}`;
+      groupList.appendChild(li);
+    }
+  }
+
+  function render(){
+    const sorted   = getSorted(gigs);
+    const filtered = applyFilters(sorted);
+    totalCountEl.textContent = filtered.length;
+    renderTable(filtered);
+    renderTop10(filtered);
+  }
+
+  // Tapahtumat
+  searchInput.addEventListener('input', render);
+  [yearFilter, venueFilter, cityFilter, countryFilter, groupBy].forEach(el => el.addEventListener('change', render));
+  toggleOrderBtn.addEventListener('click', () => {
+    sortDir = (sortDir==='desc') ? 'asc' : 'desc';
+    localStorage.setItem('kemopetrol_sort_dir', sortDir);
+    updateToggleLabel();
+    render();
+  });
+
+  // Init
+  render();
+});
+</script>
 </body>
 </html>
