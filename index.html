@@ -8,6 +8,9 @@
   :root { --bg:#0b0b0c; --fg:#e0e0e0; --card:#1a1a1a; --border:#444; }
   body { font-family: Arial, sans-serif; background:var(--bg); color:var(--fg); margin:0; padding:20px; }
 
+  /* Guarantee hidden works even if display is set elsewhere */
+  [hidden] { display: none !important; }
+
   /* Title */
   .page-title{ display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; margin:0 0 10px; }
   .title-line-big{ display:flex; align-items:center; justify-content:center; gap:8px; line-height:1.1;
@@ -32,7 +35,6 @@
 
   /* Controls */
   .controls{ display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 14px; align-items:center; justify-content:center; }
-  /* Grid-pohjainen filter-asettelu mobiilissa */
   .filters{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -74,7 +76,7 @@
 <div id="orientationHint" class="orientation-hint" aria-live="polite" hidden>
   <span class="oh-icon" aria-hidden="true">⤻</span>
   Turn your phone to landscape for a better view
-  <button id="orientationClose" class="oh-close" aria-label="Dismiss">×</button>
+  <button id="orientationClose" class="oh-close" type="button" aria-label="Dismiss">×</button>
 </div>
 
 <div class="page-title">
@@ -111,7 +113,6 @@
       </select>
       <span>(Top 10)</span>
     </div>
-    <!-- Tilattu lista takaa 1…10 numeroinnin -->
     <ol class="group-list hidden" id="groupList" start="1"></ol>
   </div>
 </div>
@@ -151,8 +152,6 @@ document.addEventListener('DOMContentLoaded', function(){
   /* --- Venue normalisointi Top 10 -laskentaa varten --- */
   function normalizeVenue(name){
     const original = (name || '').trim();
-
-    // Täsmälliset alias-säännöt (ei geneeristä Areena/Casino -niputusta)
     const aliasRules = [
       { re:/tavastia(-?\s*klubi)?\b/i,           name:'Tavastia' },
       { re:/apollo(\s*live\s*club)?\b/i,         name:'Apollo' },
@@ -167,30 +166,27 @@ document.addEventListener('DOMContentLoaded', function(){
       { re:/\bklubi\b/i,                         name:'Klubi' },
       { re:/kaapelitehdas|cable\s*factory/i,     name:'Kaapelitehdas' },
       { re:/provinssi(\s*-?\s*rock|rock)?\b/i,   name:'Provinssi' },
-      // erot
+      // pidä erillään
       { re:/hullu\s*poro\s*areena\b/i,           name:'Hullu Poro Areena' },
       { re:/seinäjoen\s*areena\b/i,              name:'Seinäjoen Areena' },
       { re:/nouveau\s*casino\b/i,                name:'Nouveau Casino' },
       { re:/hangon\s*casino\b/i,                 name:'Hangon Casino' },
       { re:/järvenpään\s*casino\b/i,             name:'Järvenpään Casino' },
     ];
+    for (const a of aliasRules) if (a.re.test(original)) return a.name;
 
-    // Suora osuma
-    for (const a of aliasRules) { if (a.re.test(original)) return a.name; }
-
-    // Poimi pilkkuosasta tunnettu venue (esim. "Ruma-klubi, Tavastia")
     const parts = original.split(',').map(p => p.trim()).filter(Boolean);
     if (parts.length > 1) {
       for (const part of parts) for (const a of aliasRules) {
         if (a.re.test(part)) return a.name;
       }
-      return original; // ei arvailla
+      return original;
     }
     return original;
   }
 
   // Järjestys
-  let sortDir = localStorage.getItem('kemopetrol_sort_dir') || 'desc'; // 'desc' = newest first
+  let sortDir = localStorage.getItem('kemopetrol_sort_dir') || 'desc';
   const updateToggleLabel = () => toggleOrderBtn.textContent = (sortDir === 'desc') ? 'Newest first ▼' : 'Oldest first ▲';
   updateToggleLabel();
 
@@ -201,19 +197,19 @@ document.addEventListener('DOMContentLoaded', function(){
     selectEl.appendChild(frag);
   }
   addOptions(yearFilter,  [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b)=>b-a));
-  addOptions(venueFilter, [...new Set(gigs.map(g => g.venue))].sort()); // raw nimet → includes toimii
+  addOptions(venueFilter, [...new Set(gigs.map(g => g.venue))].sort());
   addOptions(cityFilter,  [...new Set(gigs.map(g => g.city))].sort());
   addOptions(countryFilter,[...new Set(gigs.map(g => g.country))].sort());
 
   // Apurit
   const parseDate = d => { const [dd,mm,yy]=d.split("."); return new Date(`${yy}-${mm}-${dd}T00:00:00`); };
   const getSorted = rows => {
-    const copy = rows.slice().sort((a,b)=>parseDate(a.date)-parseDate(b.date)); // oldest->newest
-    if (sortDir === 'desc') copy.reverse();                                     // newest->oldest
+    const copy = rows.slice().sort((a,b)=>parseDate(a.date)-parseDate(b.date));
+    if (sortDir === 'desc') copy.reverse();
     return copy;
   };
 
-  // Filtterit (venue: osittaisosuma raw-venueen)
+  // Filtterit
   function applyFilters(rows){
     const s  = (searchInput.value || '').toLowerCase();
     const yf = yearFilter.value, vf = venueFilter.value, cf = cityFilter.value, cof = countryFilter.value;
@@ -222,12 +218,8 @@ document.addEventListener('DOMContentLoaded', function(){
       (!vf || g.venue.toLowerCase().includes(vf.toLowerCase())) &&
       (!cf || g.city === cf) &&
       (!cof || g.country === cof) &&
-      (
-        g.date.toLowerCase().includes(s) ||
-        g.venue.toLowerCase().includes(s) ||
-        g.city.toLowerCase().includes(s) ||
-        g.country.toLowerCase().includes(s)
-      )
+      ( g.date.toLowerCase().includes(s) || g.venue.toLowerCase().includes(s) ||
+        g.city.toLowerCase().includes(s) || g.country.toLowerCase().includes(s) )
     );
   }
 
@@ -246,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
-  // Top 10: lista piilossa kunnes valitaan "Count by"
+  // Top 10 näkyy vain valittuna
   function renderTop10(rows){
     const mode = groupBy.value;
     if (!mode) { groupList.classList.add('hidden'); groupList.innerHTML=''; return; }
@@ -268,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function(){
       .sort((a,b)=> b[1]-a[1] || (''+a[0]).localeCompare(''+b[0]));
 
     groupList.innerHTML = '';
-    groupList.setAttribute('start','1'); // numerointi 1…10
+    groupList.setAttribute('start','1');
     const limit = Math.min(10, items.length);
     for (let i=0; i<limit; i++){
       const [name, count] = items[i];
@@ -284,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function(){
     totalCountEl.textContent = filtered.length;
     renderTable(filtered);
     renderTop10(filtered);
-    updateOrientationHint(); // päivitä vinkki kun taulukko piirtyy
+    updateOrientationHint();
   }
 
   // Tapahtumat
@@ -297,8 +289,7 @@ document.addEventListener('DOMContentLoaded', function(){
     render();
   });
 
-  // Orientation hint: näytä vain pienillä ruuduilla, pystyasennossa,
-  // ja jos taulukko vaatii sivuskrollia. Muista käyttäjän sulku.
+  // Orientation hint
   const hint  = document.getElementById('orientationHint');
   const close = document.getElementById('orientationClose');
   const hintKey = 'hideOrientationHint';
@@ -324,7 +315,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // Init
   render();
-  // varmistus: jos render ehtii ennen layouttia
   setTimeout(updateOrientationHint, 0);
 });
 </script>
