@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function(){
       { re:/\bklubi\b/i,                         name:'Klubi' },
       { re:/kaapelitehdas|cable\s*factory/i,     name:'Kaapelitehdas' },
       { re:/provinssi(\s*-?\s*rock|rock)?\b/i,   name:'Provinssi' },
-      // pidä erillään
+      // erilliset
       { re:/hullu\s*poro\s*areena\b/i,           name:'Hullu Poro Areena' },
       { re:/seinäjoen\s*areena\b/i,              name:'Seinäjoen Areena' },
       { re:/nouveau\s*casino\b/i,                name:'Nouveau Casino' },
@@ -289,10 +289,10 @@ document.addEventListener('DOMContentLoaded', function(){
     render();
   });
 
-  // Orientation hint
+  // Orientation hint (v2: uusi avain + tupla-RAF mittaus)
   const hint  = document.getElementById('orientationHint');
   const close = document.getElementById('orientationClose');
-  const hintKey = 'hideOrientationHint';
+  const hintKey = 'hideOrientationHint_v2';
   function needsHorizontalScroll(){
     const c = document.querySelector('.table-container');
     return c ? (c.scrollWidth > c.clientWidth) : false;
@@ -304,7 +304,12 @@ document.addEventListener('DOMContentLoaded', function(){
     return small && portrait && needsHorizontalScroll() && !hidden;
   }
   function updateOrientationHint(){
-    hint.hidden = !shouldShowHint();
+    // Odota, että layout on varmuudella valmis ennen mittausta
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        hint.hidden = !shouldShowHint();
+      });
+    });
   }
   close.addEventListener('click', () => {
     localStorage.setItem(hintKey, '1');
@@ -315,7 +320,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // Init
   render();
-  setTimeout(updateOrientationHint, 0);
 });
 </script>
 
