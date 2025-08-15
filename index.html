@@ -5,36 +5,78 @@
 <title>Kemopetrol Gig Archive</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
+  :root{
+    --bg:#0b0b0c; --fg:#e0e0e0; --card:#1a1a1a; --border:#444;
+  }
   body {
     font-family: Arial, sans-serif;
-    background-color: #0b0b0c;
-    color: #e0e0e0;
+    background-color: var(--bg);
+    color: var(--fg);
     margin: 0;
     padding: 20px;
   }
-  h1 {
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+
+  /* Header */
+  .page-title{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap: 6px;
+    text-align:center;
+    margin: 0 0 10px;
+  }
+  .title-line-big{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    line-height:1.1;
+    /* font-size säätyy ruudun koon mukaan */
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .title-line-sub{
+    font-size: clamp(14px, 3.3vw, 20px);
+    opacity: 0.95;
+    letter-spacing: 0.2px;
+    margin-top: 2px;
   }
   .logo-inline {
-    height: 1em;
-    vertical-align: middle;
+    height: 1em;            /* sama korkeus kuin tekstillä */
+    vertical-align: middle; /* siisti linjaus tekstin kanssa */
+    display:inline-block;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 12px 0 14px;
+    align-items: center;
+    justify-content: center;
   }
   .filters {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 10px;
     justify-content: center;
   }
-  input, select {
-    padding: 6px;
+  input, select, button {
+    padding: 8px 10px;
     font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--fg);
+    cursor: pointer;
   }
+  button { border-color: #555; }
+  button:focus-visible { outline: 2px solid #888; outline-offset: 2px; }
 
+  /* Summary / counts */
   .summary-bar {
     display: flex;
     flex-wrap: wrap;
@@ -43,12 +85,11 @@
     justify-content: center;
     margin: 8px 0 16px;
     font-size: 14px;
-    opacity: 0.95;
   }
   .summary-count {
     padding: 6px 10px;
-    background: #1a1a1a;
-    border: 1px solid #444;
+    background: var(--card);
+    border: 1px solid var(--border);
     border-radius: 8px;
   }
   .group-box {
@@ -71,39 +112,45 @@
     overflow: auto;
   }
 
-  .table-container {
-    overflow-x: auto;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 600px; /* estää sarakkeiden ahtautumisen */
-  }
+  /* Table */
+  .table-container { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 600px; }
   th, td {
     padding: 8px;
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid var(--border);
     text-align: left;
-    white-space: nowrap;
+    white-space: nowrap; /* pidä solut yhdellä rivillä: mobiilissa voi skrollata vaakaan */
   }
-  th {
-    background-color: #1a1a1a;
-  }
+  th { background-color: var(--card); position: sticky; top: 0; z-index: 1; }
   th.num, td.num { width: 1%; text-align: right; }
+
+  /* Pienillä näytöillä hieman tiiviimpi asettelu */
+  @media (max-width: 500px){
+    body { padding: 16px; }
+    input, select, button { padding: 8px; font-size: 13px; }
+  }
 </style>
 </head>
 <body>
 
-<h1>
-  Kemopetrol Gig Archive
-  <img src="kemopetrol_logo_optimized.png" alt="Kemopetrol logo" class="logo-inline">
-</h1>
+<!-- Kaksirivinen title -->
+<div class="page-title">
+  <div class="title-line-big">
+    Kemopetrol
+    <img src="kemopetrol_logo_optimized.png" alt="Kemopetrol logo" class="logo-inline">
+  </div>
+  <div class="title-line-sub">Gig Archive</div>
+</div>
 
-<div class="filters">
-  <input type="text" id="search" placeholder="Search...">
-  <select id="yearFilter"><option value="">All years</option></select>
-  <select id="venueFilter"><option value="">All venues / events</option></select>
-  <select id="cityFilter"><option value="">All cities</option></select>
-  <select id="countryFilter"><option value="">All countries</option></select>
+<div class="controls">
+  <div class="filters">
+    <input type="text" id="search" placeholder="Search...">
+    <select id="yearFilter"><option value="">All years</option></select>
+    <select id="venueFilter"><option value="">All venues / events</option></select>
+    <select id="cityFilter"><option value="">All cities</option></select>
+    <select id="countryFilter"><option value="">All countries</option></select>
+  </div>
+  <button id="toggleOrder" aria-label="Toggle sort order">Newest first ▼</button>
 </div>
 
 <div class="summary-bar">
@@ -130,32 +177,24 @@
 </div>
 
 <div class="table-container">
-<table id="gigTable">
-  <thead>
-    <tr>
-      <th class="num">#</th>
-      <th>Date</th>
-      <th>Venue / Event</th>
-      <th>City</th>
-      <th>Country</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+  <table id="gigTable">
+    <thead>
+      <tr>
+        <th class="num">#</th>
+        <th>Date</th>
+        <th>Venue / Event</th>
+        <th>City</th>
+        <th>Country</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 
 <script src="gigs.js"></script>
 <script>
 (function(){
-  const gigs = window.gigs;
-
-  // Uusimmasta vanhimpaan
-  gigs.sort((a, b) => {
-    const [da, ma, ya] = a.date.split(".");
-    const [db, mb, yb] = b.date.split(".");
-    return new Date(`${yb}-${mb}-${db}`) - new Date(`${ya}-${ma}-${da}`);
-  }).reverse();
-
+  const gigs = window.gigs.slice(); // käytetään kopiota
   const tbody = document.querySelector('#gigTable tbody');
   const yearFilter = document.getElementById('yearFilter');
   const venueFilter = document.getElementById('venueFilter');
@@ -163,30 +202,47 @@
   const countryFilter = document.getElementById('countryFilter');
   const searchInput = document.getElementById('search');
   const totalCountEl = document.getElementById('totalCount');
-
   const groupBy = document.getElementById('groupBy');
   const limitBy = document.getElementById('limitBy');
   const groupList = document.getElementById('groupList');
+  const toggleOrderBtn = document.getElementById('toggleOrder');
 
-  // Täytetään suodattimet
+  // Järjestyksen tila
+  let sortDir = localStorage.getItem('kemopetrol_sort_dir') || 'desc'; // desc = newest first
+
+  function updateToggleLabel(){
+    toggleOrderBtn.textContent = (sortDir === 'desc') ? 'Newest first ▼' : 'Oldest first ▲';
+  }
+  updateToggleLabel();
+
+  // Suodatinlistat
   const years = [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b) => b-a);
-  years.forEach(y => { const opt = document.createElement('option'); opt.value = y; opt.textContent = y; yearFilter.appendChild(opt); });
-
+  years.forEach(y => { const o=document.createElement('option'); o.value=y; o.textContent=y; yearFilter.appendChild(o); });
   const venues = [...new Set(gigs.map(g => g.venue))].sort();
-  venues.forEach(v => { const opt = document.createElement('option'); opt.value = v; opt.textContent = v; venueFilter.appendChild(opt); });
-
+  venues.forEach(v => { const o=document.createElement('option'); o.value=v; o.textContent=v; venueFilter.appendChild(o); });
   const cities = [...new Set(gigs.map(g => g.city))].sort();
-  cities.forEach(c => { const opt = document.createElement('option'); opt.value = c; opt.textContent = c; cityFilter.appendChild(opt); });
-
+  cities.forEach(c => { const o=document.createElement('option'); o.value=c; o.textContent=c; cityFilter.appendChild(o); });
   const countries = [...new Set(gigs.map(g => g.country))].sort();
-  countries.forEach(c => { const opt = document.createElement('option'); opt.value = c; opt.textContent = c; countryFilter.appendChild(opt); });
+  countries.forEach(c => { const o=document.createElement('option'); o.value=c; o.textContent=c; countryFilter.appendChild(o); });
+
+  function parseDate(str){
+    const [d,m,y] = str.split(".");
+    return new Date(`${y}-${m}-${d}T00:00:00`);
+  }
+
+  function getSorted(data){
+    const copy = data.slice().sort((a,b) => parseDate(a.date) - parseDate(b.date)); // oldest->newest
+    if (sortDir === 'desc') copy.reverse(); // newest->oldest
+    return copy;
+  }
 
   function applyFilters(data){
     const s = searchInput.value.toLowerCase();
     const yf = yearFilter.value, vf = venueFilter.value, cf = cityFilter.value, cof = countryFilter.value;
+
     return data.filter(g =>
       (!yf || g.date.endsWith(yf)) &&
-      (!vf || g.venue === vf) &&
+      (!vf || g.venue.toLowerCase().includes(vf.toLowerCase())) &&  // osittainen osuma venueen
       (!cf || g.city === cf) &&
       (!cof || g.country === cof) &&
       (
@@ -217,22 +273,14 @@
     const key = groupBy.value;
     groupList.innerHTML = '';
     if(!key){ return; }
-
-    // muodostetaan ryhmäavaimet
-    const getKey = (g) => {
-      if(key === 'year') return g.date.split(".")[2];
-      return g[key];
-    };
-
+    const getKey = (g) => key === 'year' ? g.date.split(".")[2] : g[key];
     const counts = {};
     rows.forEach(g => {
       const k = getKey(g) || '(unknown)';
       counts[k] = (counts[k] || 0) + 1;
     });
-
     const items = Object.entries(counts)
       .sort((a,b) => b[1] - a[1] || (''+a[0]).localeCompare(''+b[0]));
-
     let limit = limitBy.value === 'all' ? items.length : parseInt(limitBy.value, 10);
     items.slice(0, limit).forEach(([name, count]) => {
       const li = document.createElement('li');
@@ -242,7 +290,8 @@
   }
 
   function render(){
-    const filtered = applyFilters(gigs);
+    const sorted = getSorted(gigs);
+    const filtered = applyFilters(sorted);
     totalCountEl.textContent = filtered.length;
     renderTable(filtered);
     renderGrouping(filtered);
@@ -251,8 +300,14 @@
   // Tapahtumat
   searchInput.addEventListener('input', render);
   [yearFilter, venueFilter, cityFilter, countryFilter, groupBy, limitBy].forEach(el => el.addEventListener('change', render));
+  toggleOrderBtn.addEventListener('click', () => {
+    sortDir = (sortDir === 'desc') ? 'asc' : 'desc';
+    localStorage.setItem('kemopetrol_sort_dir', sortDir);
+    updateToggleLabel();
+    render();
+  });
 
-  // Alkurenderöinti
+  // Alku
   render();
 })();
 </script>
