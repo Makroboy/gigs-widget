@@ -222,7 +222,6 @@ window.gigs = [
   { date: "12.12.2000", venue: "Radisson SAS", city: "Oulu", country: "Finland" },
   { date: "08.12.2000", venue: "Nosturi", city: "Helsinki", country: "Finland" },
   { date: "02.12.2000", venue: "Onnenpäivät", city: "Imatra", country: "Finland" },
-  { date: "30.11.2000", venue: "Jyrki, MTV3, Lasipalatsi", city: "Hämeenlinna", country: "Finland" },
   { date: "24.11.2000", venue: "Puuteri", city: "Hämeenlinna", country: "Finland" },
   { date: "18.11.2000", venue: "Lutakko", city: "Jyväskylä", country: "Finland" },
   { date: "17.11.2000", venue: "Mindtrek, Yo-talo", city: "Tampere", country: "Finland" },
@@ -285,6 +284,7 @@ window.gigs = [
 
   // 1999
   { date: "12.12.1999", venue: "Cafe Medicin Man", city: "Hyvinkää", country: "Finland" },
+  { date: "30.11.1999, venue: "Jyrki, MTV3, Lasipalatsi", city: "Hämeenlinna", country: "Finland" },
   { date: "24.11.1999", venue: "Bar 33", city: "Helsinki", country: "Finland" },
   { date: "11.11.1999", venue: "Jump Inn", city: "Helsinki", country: "Finland" },
   { date: "09.10.1999", venue: "Uusi yo-talo", city: "Helsinki", country: "Finland" },
