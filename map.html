@@ -15,7 +15,7 @@
   defer
 ></script>
 
-<!-- MarkerCluster (helpottaa ison määrän pisteitä) -->
+<!-- MarkerCluster -->
 <link
   rel="stylesheet"
   href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
@@ -33,6 +33,7 @@
   :root { --bg:#0b0b0c; --fg:#e0e0e0; --card:#1a1a1a; --border:#444; }
   html, body { height:100%; margin:0; background:var(--bg); color:var(--fg); }
   body { display:flex; flex-direction:column; }
+
   header {
     padding:12px 14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;
     background:#0f0f10; border-bottom:1px solid var(--border);
@@ -44,8 +45,12 @@
     background:var(--card); color:var(--fg); border:1px solid var(--border);
     border-radius:8px; padding:8px 10px; font-size:14px;
   }
-  #map { flex:1; min-height: 60vh; }
-  .leaflet-popup-content { font: 14px/1.4 system-ui, Arial, sans-serif; }
+  button { cursor:pointer; }
+
+  /* KARTTA: anna selkeä korkeus */
+  #map { flex:1; min-height: 70vh; }
+  .leaflet-container { background:#0b0b0c; }
+
   .toast {
     position: fixed; left: 50%; transform: translateX(-50%);
     bottom: 14px; background: rgba(20,20,22,.9); color: var(--fg);
@@ -76,30 +81,40 @@
 <div id="map" role="region" aria-label="Gig map"></div>
 <div class="toast" id="toast"></div>
 
-<script src="gigs.js"></script>
+<!-- Lataa data ennen omaa skriptiä -->
+<script src="gigs.js" defer></script>
+
 <script>
-(function(){
-  // ---------- Helpers ----------
+window.addEventListener('load', function(){  // ⬅️ odota että Leaflet on varmasti ladattu
+  if (typeof L === 'undefined') {
+    console.error('Leaflet not loaded');
+    alert('Map library failed to load. Try refresh or check content blockers.');
+    return;
+  }
+
   const gigs = (window.gigs || []).slice();
 
+  // UI
+  const searchEl = document.getElementById('search');
+  const yearSel  = document.getElementById('year');
+  const baseSel  = document.getElementById('basemap');
+  const fitBtn   = document.getElementById('fit');
+  const toastEl  = document.getElementById('toast');
+
   const toast = (msg) => {
-    const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.style.display = 'block';
-    clearTimeout(el._t);
-    el._t = setTimeout(()=> el.style.display='none', 2800);
+    toastEl.textContent = msg;
+    toastEl.style.display = 'block';
+    clearTimeout(toastEl._t);
+    toastEl._t = setTimeout(()=> toastEl.style.display='none', 2800);
   };
 
-  // Parse date parts
+  // Vuosisuodatin
   const yearOf = g => (g.date && g.date.split('.').pop()) || '';
-
-  // Build year filter
-  const yearSel = document.getElementById('year');
   [...new Set(gigs.map(yearOf))].sort((a,b)=>b-a).forEach(y=>{
     const o=document.createElement('option'); o.value=y; o.textContent=y; yearSel.appendChild(o);
   });
 
-  // ---------- Map & layers ----------
+  // Kartta
   const map = L.map('map', { zoomControl: true, minZoom: 2, worldCopyJump: true });
 
   const layers = {
@@ -115,58 +130,40 @@
   };
   layers.osm.addTo(map);
 
+  baseSel.addEventListener('change', ()=>{
+    Object.values(layers).forEach(l=> map.removeLayer(l));
+    (layers[baseSel.value] || layers.osm).addTo(map);
+  });
+
   const cluster = L.markerClusterGroup({ maxClusterRadius: 45 });
   map.addLayer(cluster);
   map.setView([52, 10], 4); // Eurooppa
 
-  // ---------- Geocoding ----------
-  // Käyttää: 1) g.lat/lng jos annettu 2) localStorage-välimuisti 3) Nominatim-haku
+  // Geokoodaus (koordinaatit -> käytä suoraan; muuten Nominatim + cache)
   const CACHE_KEY = 'kemopetrol_geo_cache_v1';
   const geoCache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
-
-  function saveCache(){ localStorage.setItem(CACHE_KEY, JSON.stringify(geoCache)); }
+  const saveCache = () => localStorage.setItem(CACHE_KEY, JSON.stringify(geoCache));
+  const sleep = ms => new Promise(r=>setTimeout(r, ms));
 
   function placeString(g){
-    // Paras osuma: venue + city + country
     return [g.venue, g.city, g.country].filter(Boolean).join(', ');
   }
 
-  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
-
   async function geocode(q){
     if (geoCache[q]) return geoCache[q];
-    // Nominatim-kehotus: kevyt käyttö, throttle ~1/s
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}`;
     try{
-      await sleep(1200);
+      await sleep(1200); // kevyt throttlaus
       const res = await fetch(url, { headers: { 'Accept-Language': 'en' }});
       const data = await res.json();
       if (Array.isArray(data) && data[0]) {
-        const { lat, lon } = data[0];
-        const pt = { lat: +lat, lng: +lon };
+        const pt = { lat:+data[0].lat, lng:+data[0].lon };
         geoCache[q] = pt; saveCache();
         return pt;
       }
-    }catch(e){
-      console.warn('Geocode failed', e);
-    }
+    }catch(e){ console.warn('Geocode failed', e); }
     return null;
   }
-
-  // ---------- Filtering + plotting ----------
-  const searchEl = document.getElementById('search');
-  const basemapSel = document.getElementById('basemap');
-  const fitBtn = document.getElementById('fit');
-
-  basemapSel.addEventListener('change', ()=>{
-    Object.values(layers).forEach(l=> map.removeLayer(l));
-    (layers[basemapSel.value] || layers.osm).addTo(map);
-  });
-
-  fitBtn.addEventListener('click', ()=> {
-    if (!cluster.getLayers().length) return;
-    map.fitBounds(cluster.getBounds(), { padding:[20,20] });
-  });
 
   function applyFilters(list){
     const s = (searchEl.value || '').toLowerCase();
@@ -214,7 +211,7 @@
       map.fitBounds(cluster.getBounds(), { padding:[20,20] });
     }
     if (missing) {
-      toast(`Plotted ${plotted} gigs. ${missing} needed geocoding but couldn't be located automatically.`);
+      toast(`Plotted ${plotted} gigs. ${missing} couldn't be auto-located.`);
     } else if (!plotted) {
       toast('No gigs match filters.');
     }
@@ -222,11 +219,13 @@
 
   searchEl.addEventListener('input', plot);
   yearSel.addEventListener('change', plot);
+  document.getElementById('fit').addEventListener('click', ()=> {
+    if (cluster.getLayers().length) map.fitBounds(cluster.getBounds(), { padding:[20,20] });
+  });
 
   // Ensimmäinen piirto
-  // Kun Leaflet-skriptit ovat latautuneet (defer), DOM on jo valmis:
   plot();
-})();
+});
 </script>
 </body>
 </html>
