@@ -46,7 +46,7 @@ window.gigs = [
   { date: "29.10.2011", venue: "Kerubi", city: "Joensuu", country: "Finland" },
   { date: "27.10.2011", venue: "Henry's Pub", city: "Kuopio", country: "Finland" },
   { date: "22.10.2011", venue: "Virgin Oil Co.", city: "Helsinki", country: "Finland" },
-  { date: "15.10.2011", venue: "Apollo Live Club", city: "Turku", country: "Finland" },
+  { date: "15.10.2011", venue: "Apollo", city: "Turku", country: "Finland" },
   { date: "14.10.2011", venue: "Apollo Live Club", city: "Rauma", country: "Finland" },
 
   // 2007
@@ -156,7 +156,7 @@ window.gigs = [
   { date: "09.08.2002", venue: "Kulttuurikeskus Poleeni", city: "Pieksämäki", country: "Finland" },
   { date: "08.08.2002", venue: "On The Rocks", city: "Helsinki", country: "Finland" },
   { date: "27.07.2002", venue: "Koneisto", city: "Helsinki", country: "Finland" },
-  { date: "26.07.2002", venue: "DBTK", city: "Rovaniemi", country: "Finland" },
+  { date: "26.07.2002", venue: "Down By The Kemijoki", city: "Rovaniemi", country: "Finland" },
   { date: "20.07.2002", venue: "Tammerfest", city: "Tampere", country: "Finland" },
   { date: "13.07.2002", venue: "Aitoon Kirkastusjuhlat", city: "Aitoo", country: "Finland" },
   { date: "12.07.2002", venue: "Jyväskylän Kesä", city: "Jyväskylä", country: "Finland" },
