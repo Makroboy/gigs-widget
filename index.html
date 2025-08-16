@@ -8,6 +8,9 @@
   :root { --fg:#e0e0e0; --card:#1a1a1a; --border:#444; }
 
   html, body { margin:0; padding:0; height:100%; }
+  /* Estä iOS:n aggressiivinen tekstin kasvatus */
+  html { -webkit-text-size-adjust: 100%; }
+
   body { font-family: Arial, sans-serif; color: var(--fg); }
 
   .bg {
@@ -30,11 +33,13 @@
     padding: 20px;
   }
 
+  /* Otsikko */
   .page-title{ display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; margin:0 0 10px; }
   .title-line-big{ display:flex; align-items:center; justify-content:center; gap:8px; line-height:1.1; font-size:clamp(28px,5vw,40px); font-weight:700; }
   .title-line-sub{ font-size:clamp(14px,3.3vw,20px); opacity:.95; }
   .logo-inline{ height:1em; vertical-align:middle; display:inline-block; }
 
+  /* Kontrollit */
   .controls{ display:flex; flex-direction:column; gap:12px; margin:12px 0 14px; align-items:center; }
   .filters{
     display: grid;
@@ -49,23 +54,41 @@
   input{ cursor:text; }
   button{ cursor:pointer; border-color:#555; }
 
+  /* Summary + Top10 */
   .summary-bar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin:8px 0 16px; font-size:14px; }
   .summary-count{ padding:6px 10px; background:rgba(26,26,26,.85); border:1px solid var(--border); border-radius:8px; }
   .group-box{ width:min(640px,100%); background:rgba(17,17,19,.85); border:1px solid #333; border-radius:10px; padding:10px; }
   .group-box-header{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
-  .group-list{ margin:0; padding-left:24px; max-height:220px; overflow:auto; list-style:decimal; }
+  .group-list{
+    margin:0;
+    padding-left:12px;               /* pienempi sisennys */
+    max-height:220px;
+    overflow:auto;
+    list-style:decimal;
+    list-style-position:inside;      /* numerot näkyviin laatikon sisällä */
+  }
   .hidden{ display:none; }
 
+  /* Taulukko */
   .table-container{ overflow-x:auto; }
   table{ width:100%; border-collapse:collapse; min-width:600px; background:rgba(26,26,26,.85); }
   th, td{ padding:8px; border-bottom:1px solid var(--border); text-align:left; white-space:nowrap; }
   th{ background:rgba(26,26,26,.95); position:sticky; top:0; z-index:1; }
   th.num, td.num{ width:1%; text-align:right; }
 
+  /* Pienet näytöt */
   @media (max-width:500px){
     .content{ padding:16px; }
     input, select, button{ padding:8px; font-size:13px; }
     .filters{ grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+  }
+
+  /* Landscape-mobiili: Top10 tiiviimmäksi */
+  @media (orientation: landscape) and (max-height: 450px){
+    .group-box{ font-size:12px; padding:8px; max-width:100%; }
+    .group-box-header{ gap:6px; margin-bottom:6px; }
+    .group-list{ padding-left:10px; max-height:32vh; }
+    .group-list li{ line-height:1.25; white-space:normal; }
   }
 </style>
 </head>
@@ -128,12 +151,14 @@
   </div>
 </div>
 
+<!-- Data sisään -->
 <script src="gigs.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
   const gigs = (window.gigs || []).slice();
 
+  // DOM
   const tbody         = document.querySelector('#gigTable tbody');
   const yearFilter    = document.getElementById('yearFilter');
   const venueFilter   = document.getElementById('venueFilter');
@@ -145,8 +170,94 @@ document.addEventListener('DOMContentLoaded', function(){
   const groupList     = document.getElementById('groupList');
   const toggleOrderBtn= document.getElementById('toggleOrder');
 
+  /* ------- Apurit ------- */
+  // 1) Venuen puhdistus: poista <br> normalisointia ja valikkoja varten
+  const stripTags = (s='') => s.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g,' ').trim();
+  const venueForDropdown = (s='') =>
+    stripTags(s).replace(/\s*,\s*/g, ', '); // pilkun jälkeen väli
+
+  // 2) Tableen sallitaan rivinvaihto: korvaa <br> -> <br>
+  const venueForTableHTML = (s='') => s.replace(/<br\s*\/?>/gi, '<br>');
+
+  // Päivämäärä
+  const parseDate = d => { const [dd,mm,yy]=d.split("."); return new Date(`${yy}-${mm}-${dd}T00:00:00`); };
+
+  // Järjestys
+  let sortDir = localStorage.getItem('kemopetrol_sort_dir') || 'desc'; // 'desc' = newest first
+  const updateToggleLabel = () => {
+    toggleOrderBtn.textContent = (sortDir === 'desc') ? 'Newest first ▼' : 'Oldest first ▲';
+  };
+  updateToggleLabel();
+
+  // Filtterivaihtoehtojen lisäys
+  function addOptions(selectEl, values){
+    const frag = document.createDocumentFragment();
+    values.forEach(v => { const o=document.createElement('option'); o.value=v; o.textContent=v; frag.appendChild(o); });
+    selectEl.appendChild(frag);
+  }
+
+  // Vuodet
+  addOptions(yearFilter,  [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b)=>b-a));
+
+  // Venuet (näytä ilman <br>, mutta suodata osuu alkuperäiseen)
+  const rawVenues = gigs.map(g => g.venue);
+  const uiVenuesSet = new Map(); // key: UI-nimi, val: ensimmäinen raw-nimi (ei väliä, arvoa ei käytetä)
+  rawVenues.forEach(v => uiVenuesSet.set(venueForDropdown(v), true));
+  addOptions(venueFilter, [...uiVenuesSet.keys()].sort());
+
+  // City & country
+  addOptions(cityFilter,  [...new Set(gigs.map(g => g.city))].sort());
+  addOptions(countryFilter,[...new Set(gigs.map(g => g.country))].sort());
+
+  // Sorttaus
+  const getSorted = rows => {
+    const copy = rows.slice().sort((a,b)=>parseDate(a.date)-parseDate(b.date)); // oldest->newest
+    if (sortDir === 'desc') copy.reverse();                                     // newest->oldest
+    return copy;
+  };
+
+  // Filtterit (venue: osuu dropdown-nimeen -> vertaillaan puhdistetulla versiolla)
+  function applyFilters(rows){
+    const s  = (searchInput.value || '').toLowerCase();
+    const yf = yearFilter.value;
+    const vf = venueFilter.value; // tämä on UI-muotoinen
+    const cf = cityFilter.value;
+    const cof= countryFilter.value;
+    return rows.filter(g => {
+      const gVenueUI = venueForDropdown(g.venue).toLowerCase();
+      return (!yf || g.date.endsWith(yf)) &&
+             (!vf || gVenueUI === vf.toLowerCase()) &&
+             (!cf || g.city === cf) &&
+             (!cof || g.country === cof) &&
+             (
+               g.date.toLowerCase().includes(s) ||
+               stripTags(g.venue).toLowerCase().includes(s) ||
+               g.city.toLowerCase().includes(s) ||
+               g.country.toLowerCase().includes(s)
+             );
+    });
+  }
+
+  // Renderöinti
+  function renderTable(rows){
+    tbody.innerHTML = '';
+    rows.forEach((g, idx) => {
+      const tr = document.createElement('tr');
+      const venueHTML = venueForTableHTML(g.venue); // sallitaan <br> taulukossa
+      tr.innerHTML = `
+        <td class="num">${idx + 1}</td>
+        <td>${g.date}</td>
+        <td>${venueHTML}</td>
+        <td>${g.city}</td>
+        <td>${g.country}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Top 10: venue normalisointi laskee ilman <br>, sekä yhdistää muut aliasit
   function normalizeVenue(name){
-    const original = (name || '').trim();
+    const original = stripTags(name || '').trim();
     const aliasRules = [
       { re:/tavastia(-?\s*klubi)?\b/i,           name:'Tavastia' },
       { re:/apollo(\s*live\s*club)?\b/i,         name:'Apollo' },
@@ -161,6 +272,7 @@ document.addEventListener('DOMContentLoaded', function(){
       { re:/\bklubi\b/i,                         name:'Klubi' },
       { re:/kaapelitehdas|cable\s*factory/i,     name:'Kaapelitehdas' },
       { re:/provinssi(\s*-?\s*rock|rock)?\b/i,   name:'Provinssi' },
+      /* erilliset, ei niputeta geneerisesti */
       { re:/hullu\s*poro\s*areena\b/i,           name:'Hullu Poro Areena' },
       { re:/seinäjoen\s*areena\b/i,              name:'Seinäjoen Areena' },
       { re:/nouveau\s*casino\b/i,                name:'Nouveau Casino' },
@@ -168,68 +280,16 @@ document.addEventListener('DOMContentLoaded', function(){
       { re:/järvenpään\s*casino\b/i,             name:'Järvenpään Casino' },
     ];
     for (const a of aliasRules) if (a.re.test(original)) return a.name;
+
+    // Pilkun jälkeen oleva tunnettu paikka (esim. "Ruma-klubi, Tavastia")
+    const parts = original.split(',').map(p => p.trim()).filter(Boolean);
+    if (parts.length > 1){
+      for (const part of parts) for (const a of aliasRules){
+        if (a.re.test(part)) return a.name;
+      }
+      return original;
+    }
     return original;
-  }
-
-  let sortDir = localStorage.getItem('kemopetrol_sort_dir') || 'desc';
-  const updateToggleLabel = () =>
-    toggleOrderBtn.textContent = (sortDir === 'desc') ? 'Newest first ▼' : 'Oldest first ▲';
-  updateToggleLabel();
-
-  function addOptions(selectEl, values){
-    const frag = document.createDocumentFragment();
-    values.forEach(v => {
-      const o = document.createElement('option');
-      o.value = v;
-      // Dropdownissa poistetaan <br>
-      o.textContent = v.replace(/<br\s*\/?>/gi, " ");
-      frag.appendChild(o);
-    });
-    selectEl.appendChild(frag);
-  }
-
-  addOptions(yearFilter,  [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b)=>b-a));
-  addOptions(venueFilter, [...new Set(gigs.map(g => g.venue))].sort());
-  addOptions(cityFilter,  [...new Set(gigs.map(g => g.city))].sort());
-  addOptions(countryFilter,[...new Set(gigs.map(g => g.country))].sort());
-
-  const parseDate = d => { const [dd,mm,yy]=d.split("."); return new Date(`${yy}-${mm}-${dd}T00:00:00`); };
-  const getSorted = rows => {
-    const copy = rows.slice().sort((a,b)=>parseDate(a.date)-parseDate(b.date));
-    if (sortDir === 'desc') copy.reverse();
-    return copy;
-  };
-
-  function applyFilters(rows){
-    const s  = (searchInput.value || '').toLowerCase();
-    const yf = yearFilter.value, vf = venueFilter.value, cf = cityFilter.value, cof = countryFilter.value;
-    return rows.filter(g =>
-      (!yf || g.date.endsWith(yf)) &&
-      (!vf || g.venue.toLowerCase().includes(vf.toLowerCase())) &&
-      (!cf || g.city === cf) &&
-      (!cof || g.country === cof) &&
-      (
-        g.date.toLowerCase().includes(s) ||
-        g.venue.toLowerCase().includes(s) ||
-        g.city.toLowerCase().includes(s) ||
-        g.country.toLowerCase().includes(s)
-      )
-    );
-  }
-
-  function renderTable(rows){
-    tbody.innerHTML = '';
-    rows.forEach((g, idx) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td class="num">${idx + 1}</td>
-        <td>${g.date}</td>
-        <td>${g.venue}</td>
-        <td>${g.city}</td>
-        <td>${g.country}</td>
-      `;
-      tbody.appendChild(tr);
-    });
   }
 
   function renderTop10(rows){
@@ -239,8 +299,8 @@ document.addEventListener('DOMContentLoaded', function(){
 
     const keyFn = (g) => {
       if (mode === 'year')  return g.date.split(".")[2];
-      if (mode === 'venue') return normalizeVenue(g.venue.replace(/<br\s*\/?>/gi, " "));
-      return g[mode];
+      if (mode === 'venue') return normalizeVenue(g.venue);
+      return g[mode]; // city / country
     };
 
     const counts = {};
@@ -271,6 +331,7 @@ document.addEventListener('DOMContentLoaded', function(){
     renderTop10(filtered);
   }
 
+  // Tapahtumat
   searchInput.addEventListener('input', render);
   [yearFilter, venueFilter, cityFilter, countryFilter, groupBy].forEach(el => el.addEventListener('change', render));
   toggleOrderBtn.addEventListener('click', () => {
@@ -280,6 +341,7 @@ document.addEventListener('DOMContentLoaded', function(){
     render();
   });
 
+  // Init
   render();
 });
 </script>
