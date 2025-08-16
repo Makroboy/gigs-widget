@@ -28,19 +28,11 @@
     display:grid;
     width:100%;
     gap:10px;
-    /* Desktop: 5 saraketta */
     grid-template-columns: repeat(5, minmax(160px, 1fr));
   }
-  /* Tablet */
-  @media (max-width: 900px){
-    .filters { grid-template-columns: repeat(3, minmax(160px, 1fr)); }
-  }
-  /* Puhelin */
-  @media (max-width: 600px){
-    .filters { grid-template-columns: repeat(2, minmax(150px, 1fr)); }
-  }
+  @media (max-width: 900px){ .filters { grid-template-columns: repeat(3, minmax(160px, 1fr)); } }
+  @media (max-width: 600px){ .filters { grid-template-columns: repeat(2, minmax(150px, 1fr)); } }
 
-  /* Hakukenttä leveämmäksi kun tilaa */
   #search { grid-column: span 2; }
   @media (max-width: 900px){ #search { grid-column: span 3; } }
   @media (max-width: 600px){ #search { grid-column: span 2; } }
@@ -52,11 +44,8 @@
   input{ cursor:text; }
   button{ cursor:pointer; border-color:#555; }
 
-  /* Toolbar: järjestys + laskuri */
-  .toolbar {
-    display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;
-    width:100%;
-  }
+  /* Toolbar */
+  .toolbar { display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; width:100%; }
   .summary-count{ padding:6px 10px; background:rgba(26,26,26,.85); border:1px solid var(--border); border-radius:999px; font-size:14px; }
   #toggleOrder { padding:8px 12px; border-radius:999px; }
 
@@ -72,8 +61,19 @@
   th, td{ padding:8px; border-bottom:1px solid var(--border); text-align:left; white-space:nowrap; }
   th{ background:rgba(26,26,26,.95); position:sticky; top:0; z-index:1; }
   th.num, td.num{ width:1%; text-align:right; }
+  th.date, td.date{ width:1%; } /* pieni mutta ei katkea */
 
-  /* Pienet näytöt: hieman tiiviimpi */
+  /* Pienet näytöt: salli rivinvaihto v/c/country, poista min-width, tiivistä paddings */
+  @media (max-width: 900px){
+    table{ min-width:0; }
+    th, td{ padding:6px 7px; }
+    /* salli rivinvaihto kaikelle paitsi rivinumero + päivämäärä */
+    th, td{ white-space:normal; }
+    th.num, td.num, th.date, td.date{ white-space:nowrap; }
+    /* pidä rivit siisteinä: mahdollista sanakatkaisu venue/city/country -sarakkeissa */
+    td.venue, td.city, td.country{ overflow-wrap:anywhere; word-break:break-word; }
+  }
+
   @media (max-width:500px){
     .content{ padding:16px; }
     input, select, button{ padding:8px; font-size:13px; }
@@ -128,7 +128,7 @@
       <thead>
         <tr>
           <th class="num">#</th>
-          <th>Date</th>
+          <th class="date">Date</th>
           <th>Venue / Event</th>
           <th>City</th>
           <th>Country</th>
@@ -235,10 +235,10 @@ document.addEventListener('DOMContentLoaded', function(){
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td class="num">${idx + 1}</td>
-        <td>${g.date}</td>
-        <td>${g.venue}</td>
-        <td>${g.city}</td>
-        <td>${g.country}</td>
+        <td class="date">${g.date}</td>
+        <td class="venue">${g.venue}</td>
+        <td class="city">${g.city}</td>
+        <td class="country">${g.country}</td>
       `;
       tbody.appendChild(tr);
     });
