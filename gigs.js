@@ -58,6 +58,7 @@ window.gigs = [
 
   // 2006
   { date: "28.10.2006", venue: "Musiikki & Media, Klubi", city: "Tampere", country: "Finland" },
+  { date: "21.10.2006", venue: "NRJ Fashion Awards, Kaapelitehdas", city: "Helsinki", country: "Finland" },
   { date: "26.08.2006", venue: "Kesäpotpuri, Pakkahuone", city: "Tampere", country: "Finland" },
   { date: "12.08.2006", venue: "Meijerirock", city: "Espoo", country: "Finland" },
   { date: "29.07.2006", venue: "Qstock", city: "Oulu", country: "Finland" },
