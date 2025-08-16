@@ -72,7 +72,7 @@
 <body>
 
 <div class="bg" aria-hidden="true"></div>
-div class="bg-dim" aria-hidden="true"></div>
+<div class="bg-dim" aria-hidden="true"></div>
 
 <div class="content">
   <div class="page-title">
@@ -148,24 +148,24 @@ document.addEventListener('DOMContentLoaded', function(){
   function normalizeVenue(name){
     const original = (name || '').trim();
     const aliasRules = [
-      { re:/tavastia(-?\\s*klubi)?\\b/i,           name:'Tavastia' },
-      { re:/apollo(\\s*live\\s*club)?\\b/i,         name:'Apollo' },
-      { re:/yo[\\-\\s]?talo\\b/i,                   name:'Yo-talo' },
-      { re:/nosturi\\b/i,                           name:'Nosturi' },
-      { re:/virgin\\s*oil\\s*co\\.?\\b/i,           name:'Virgin Oil Co.' },
-      { re:/henry'?s\\s*pub\\b/i,                   name:\"Henry's Pub\" },
-      { re:/kåren\\b/i,                             name:'Kåren' },
-      { re:/lutakko\\b/i,                           name:'Lutakko' },
-      { re:/kerubi\\b/i,                            name:'Kerubi' },
-      { re:/dbtl\\b/i,                              name:'DBTL' },
-      { re:/\\bklubi\\b/i,                          name:'Klubi' },
-      { re:/kaapelitehdas|cable\\s*factory/i,       name:'Kaapelitehdas' },
-      { re:/provinssi(\\s*-?\\s*rock|rock)?\\b/i,   name:'Provinssi' },
-      { re:/hullu\\s*poro\\s*areena\\b/i,           name:'Hullu Poro Areena' },
-      { re:/seinäjoen\\s*areena\\b/i,               name:'Seinäjoen Areena' },
-      { re:/nouveau\\s*casino\\b/i,                 name:'Nouveau Casino' },
-      { re:/hangon\\s*casino\\b/i,                  name:'Hangon Casino' },
-      { re:/järvenpään\\s*casino\\b/i,              name:'Järvenpään Casino' },
+      { re:/tavastia(-?\s*klubi)?\b/i,           name:'Tavastia' },
+      { re:/apollo(\s*live\s*club)?\b/i,         name:'Apollo' },
+      { re:/yo[\-\s]?talo\b/i,                   name:'Yo-talo' },
+      { re:/nosturi\b/i,                         name:'Nosturi' },
+      { re:/virgin\s*oil\s*co\.?\b/i,            name:'Virgin Oil Co.' },
+      { re:/henry'?s\s*pub\b/i,                  name:"Henry's Pub" },
+      { re:/kåren\b/i,                           name:'Kåren' },
+      { re:/lutakko\b/i,                         name:'Lutakko' },
+      { re:/kerubi\b/i,                          name:'Kerubi' },
+      { re:/dbtl\b/i,                            name:'DBTL' },
+      { re:/\bklubi\b/i,                         name:'Klubi' },
+      { re:/kaapelitehdas|cable\s*factory/i,     name:'Kaapelitehdas' },
+      { re:/provinssi(\s*-?\s*rock|rock)?\b/i,   name:'Provinssi' },
+      { re:/hullu\s*poro\s*areena\b/i,           name:'Hullu Poro Areena' },
+      { re:/seinäjoen\s*areena\b/i,              name:'Seinäjoen Areena' },
+      { re:/nouveau\s*casino\b/i,                name:'Nouveau Casino' },
+      { re:/hangon\s*casino\b/i,                 name:'Hangon Casino' },
+      { re:/järvenpään\s*casino\b/i,             name:'Järvenpään Casino' },
     ];
     for (const a of aliasRules) if (a.re.test(original)) return a.name;
     const parts = original.split(',').map(p => p.trim()).filter(Boolean);
@@ -193,7 +193,11 @@ document.addEventListener('DOMContentLoaded', function(){
   addOptions(cityFilter,  [...new Set(gigs.map(g => g.city))].sort());
   addOptions(countryFilter,[...new Set(gigs.map(g => g.country))].sort());
 
-  const parseDate = d => { const [dd,mm,yy]=d.split("."); return new Date(`${yy}-${mm}-${dd}T00:00:00`); };
+  const parseDate = d => { 
+    const [dd,mm,yy]=d.split(".");
+    return new Date(`${yy}-${mm}-${dd}T00:00:00`);
+  };
+
   const getSorted = rows => {
     const copy = rows.slice().sort((a,b)=>parseDate(a.date)-parseDate(b.date));
     if (sortDir === 'desc') copy.reverse();
