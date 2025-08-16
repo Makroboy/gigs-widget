@@ -63,15 +63,22 @@
   th.num, td.num{ width:1%; text-align:right; }
   th.date, td.date{ width:1%; } /* pieni mutta ei katkea */
 
-  /* Pienet näytöt: salli rivinvaihto v/c/country, poista min-width, tiivistä paddings */
+  /* Pienet näytöt: Venue saa rivittyä, City & Country pysyvät yhdessä rivissä (vaakaskrolli ok) */
   @media (max-width: 900px){
-    table{ min-width:0; }
+    table{ min-width:600px; }         /* pidä leveys, jotta vaakaskrolli toimii */
     th, td{ padding:6px 7px; }
-    /* salli rivinvaihto kaikelle paitsi rivinumero + päivämäärä */
+
+    /* Oletuksena sallitaan rivinvaihto… */
     th, td{ white-space:normal; }
-    th.num, td.num, th.date, td.date{ white-space:nowrap; }
-    /* pidä rivit siisteinä: mahdollista sanakatkaisu venue/city/country -sarakkeissa */
-    td.venue, td.city, td.country{ overflow-wrap:anywhere; word-break:break-word; }
+
+    /* …mutta nämä pidetään aina yhdellä rivillä */
+    th.num, td.num,
+    th.date, td.date,
+    th:nth-child(4), td.city,  /* City */
+    th:nth-child(5), td.country { white-space:nowrap; }
+
+    /* Venue voi katketa / rivittyä */
+    td.venue{ overflow-wrap:anywhere; word-break:break-word; }
   }
 
   @media (max-width:500px){
@@ -83,7 +90,7 @@
 <body>
 
 <div class="bg" aria-hidden="true"></div>
-<div class="bg-dim" aria-hidden="true"></div>
+div class="bg-dim" aria-hidden="true"></div>
 
 <div class="content">
   <div class="page-title">
@@ -179,7 +186,6 @@ document.addEventListener('DOMContentLoaded', function(){
       { re:/järvenpään\s*casino\b/i,             name:'Järvenpään Casino' },
     ];
     for (const a of aliasRules) if (a.re.test(original)) return a.name;
-
     const parts = original.split(',').map(p => p.trim()).filter(Boolean);
     if (parts.length > 1){
       for (const part of parts) for (const a of aliasRules){
