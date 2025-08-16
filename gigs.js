@@ -77,7 +77,7 @@ window.gigs = [
   { date: "05.04.2006", venue: "Henry's Pub", city: "Kuopio", country: "Finland" },
   { date: "02.04.2006", venue: "Kulttuuritalo (Simple Minds support)", city: "Helsinki", country: "Finland" },
   { date: "01.04.2006", venue: "Stockmann (unplugged)", city: "Helsinki", country: "Finland" },
-  { date: "30.03.2006", venue: "Tuomas & Juuso Experience, Nelonen (TV, unplugged)", city: "Helsinki", country: "Finland" },
+  { date: "30.03.2006", venue: "Tuomas & Juuso Experience,<BR>Nelonen (TV, unplugged)", city: "Helsinki", country: "Finland" },
   { date: "29.03.2006", venue: "Pop Klubi, YLE TV2 (TV)", city: "Helsinki", country: "Finland" },
   { date: "24.03.2006", venue: "Kuudes linja (album release)", city: "Helsinki", country: "Finland" },
 
