@@ -193,11 +193,7 @@ document.addEventListener('DOMContentLoaded', function(){
   addOptions(cityFilter,  [...new Set(gigs.map(g => g.city))].sort());
   addOptions(countryFilter,[...new Set(gigs.map(g => g.country))].sort());
 
-  const parseDate = d => { 
-    const [dd,mm,yy]=d.split(".");
-    return new Date(`${yy}-${mm}-${dd}T00:00:00`);
-  };
-
+  const parseDate = d => { const [dd,mm,yy]=d.split("."); return new Date(`${yy}-${mm}-${dd}T00:00:00`); };
   const getSorted = rows => {
     const copy = rows.slice().sort((a,b)=>parseDate(a.date)-parseDate(b.date));
     if (sortDir === 'desc') copy.reverse();
