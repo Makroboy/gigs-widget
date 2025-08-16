@@ -10,38 +10,41 @@
   html, body { margin:0; padding:0; height:100%; }
   body { font-family: Arial, sans-serif; color: var(--fg); }
 
-  .bg {
-    position: fixed;
-    inset: 0;
-    background: url('bg.png') no-repeat center center;
-    background-size: cover;
-    z-index: -2;
-  }
-  .bg-dim {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.3);
-    z-index: -1;
-  }
+  /* Tausta */
+  .bg { position: fixed; inset: 0; background: url('bg.png') no-repeat center center; background-size: cover; z-index: -2; }
+  .bg-dim { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: -1; }
 
-  .content {
-    position: relative;
-    min-height: 100%;
-    padding: 20px;
-  }
-
+  /* Runko */
+  .content { position: relative; min-height: 100%; padding: 20px; }
   .page-title{ display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; margin:0 0 10px; }
   .title-line-big{ display:flex; align-items:center; justify-content:center; gap:8px; line-height:1.1; font-size:clamp(28px,5vw,40px); font-weight:700; }
   .title-line-sub{ font-size:clamp(14px,3.3vw,20px); opacity:.95; }
   .logo-inline{ height:1em; vertical-align:middle; display:inline-block; }
 
-  .controls{ display:flex; flex-direction:column; gap:12px; margin:12px 0 14px; align-items:center; }
-  .filters{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 10px;
-    width: min(1100px, 100%);
+  /* Kontrollit */
+  .controls { display:flex; flex-direction:column; gap:12px; margin:12px auto 14px; align-items:center; width:min(1100px,100%); }
+
+  .filters {
+    display:grid;
+    width:100%;
+    gap:10px;
+    /* Desktop: 5 saraketta */
+    grid-template-columns: repeat(5, minmax(160px, 1fr));
   }
+  /* Tablet */
+  @media (max-width: 900px){
+    .filters { grid-template-columns: repeat(3, minmax(160px, 1fr)); }
+  }
+  /* Puhelin */
+  @media (max-width: 600px){
+    .filters { grid-template-columns: repeat(2, minmax(150px, 1fr)); }
+  }
+
+  /* Hakukenttä leveämmäksi kun tilaa */
+  #search { grid-column: span 2; }
+  @media (max-width: 900px){ #search { grid-column: span 3; } }
+  @media (max-width: 600px){ #search { grid-column: span 2; } }
+
   input, select, button{
     padding:8px 10px; font-size:14px; border-radius:8px; border:1px solid var(--border);
     background:var(--card); color:var(--fg);
@@ -49,23 +52,31 @@
   input{ cursor:text; }
   button{ cursor:pointer; border-color:#555; }
 
-  .summary-bar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin:8px 0 16px; font-size:14px; }
-  .summary-count{ padding:6px 10px; background:rgba(26,26,26,.85); border:1px solid var(--border); border-radius:8px; }
-  .group-box{ width:min(640px,100%); background:rgba(17,17,19,.85); border:1px solid #333; border-radius:10px; padding:10px; }
-  .group-box-header{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+  /* Toolbar: järjestys + laskuri */
+  .toolbar {
+    display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;
+    width:100%;
+  }
+  .summary-count{ padding:6px 10px; background:rgba(26,26,26,.85); border:1px solid var(--border); border-radius:999px; font-size:14px; }
+  #toggleOrder { padding:8px 12px; border-radius:999px; }
+
+  /* Top10-laatikko */
+  .group-box{ width:min(1100px,100%); background:rgba(17,17,19,.85); border:1px solid #333; border-radius:10px; padding:10px; margin:0 auto; }
+  .group-box-header{ display:flex; gap:8px; align-items:center; margin-bottom:8px; flex-wrap:wrap; }
   .group-list{ margin:0; padding-left:24px; max-height:220px; overflow:auto; list-style:decimal; }
   .hidden{ display:none; }
 
-  .table-container{ overflow-x:auto; }
+  /* Taulukko */
+  .table-container{ overflow-x:auto; width:min(1100px,100%); margin:0 auto; }
   table{ width:100%; border-collapse:collapse; min-width:600px; background:rgba(26,26,26,.85); }
   th, td{ padding:8px; border-bottom:1px solid var(--border); text-align:left; white-space:nowrap; }
   th{ background:rgba(26,26,26,.95); position:sticky; top:0; z-index:1; }
   th.num, td.num{ width:1%; text-align:right; }
 
+  /* Pienet näytöt: hieman tiiviimpi */
   @media (max-width:500px){
     .content{ padding:16px; }
     input, select, button{ padding:8px; font-size:13px; }
-    .filters{ grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
   }
 </style>
 </head>
@@ -90,26 +101,26 @@
       <select id="cityFilter"><option value="">All cities</option></select>
       <select id="countryFilter"><option value="">All countries</option></select>
     </div>
-    <button id="toggleOrder" aria-label="Toggle sort order">Newest first ▼</button>
+
+    <div class="toolbar">
+      <button id="toggleOrder" aria-label="Toggle sort order">Newest first ▼</button>
+      <div class="summary-count">Showing <strong id="totalCount">0</strong> gigs</div>
+    </div>
   </div>
 
-  <div class="summary-bar">
-    <div class="summary-count">Showing <strong id="totalCount">0</strong> gigs</div>
-
-    <div class="group-box">
-      <div class="group-box-header">
-        <label for="groupBy">Count by:</label>
-        <select id="groupBy">
-          <option value="" selected>— None —</option>
-          <option value="venue">Venue</option>
-          <option value="city">City</option>
-          <option value="country">Country</option>
-          <option value="year">Year</option>
-        </select>
-        <span>(Top 10)</span>
-      </div>
-      <ol class="group-list hidden" id="groupList" start="1"></ol>
+  <div class="group-box">
+    <div class="group-box-header">
+      <label for="groupBy">Count by:</label>
+      <select id="groupBy">
+        <option value="" selected>— None —</option>
+        <option value="venue">Venue</option>
+        <option value="city">City</option>
+        <option value="country">Country</option>
+        <option value="year">Year</option>
+      </select>
+      <span>(Top 10)</span>
     </div>
+    <ol class="group-list hidden" id="groupList" start="1"></ol>
   </div>
 
   <div class="table-container">
@@ -168,6 +179,7 @@ document.addEventListener('DOMContentLoaded', function(){
       { re:/järvenpään\s*casino\b/i,             name:'Järvenpään Casino' },
     ];
     for (const a of aliasRules) if (a.re.test(original)) return a.name;
+
     const parts = original.split(',').map(p => p.trim()).filter(Boolean);
     if (parts.length > 1){
       for (const part of parts) for (const a of aliasRules){
