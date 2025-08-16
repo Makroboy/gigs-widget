@@ -168,13 +168,6 @@ document.addEventListener('DOMContentLoaded', function(){
       { re:/järvenpään\s*casino\b/i,             name:'Järvenpään Casino' },
     ];
     for (const a of aliasRules) if (a.re.test(original)) return a.name;
-    const parts = original.split(',').map(p => p.trim()).filter(Boolean);
-    if (parts.length > 1){
-      for (const part of parts) for (const a of aliasRules){
-        if (a.re.test(part)) return a.name;
-      }
-      return original;
-    }
     return original;
   }
 
@@ -185,9 +178,16 @@ document.addEventListener('DOMContentLoaded', function(){
 
   function addOptions(selectEl, values){
     const frag = document.createDocumentFragment();
-    values.forEach(v => { const o=document.createElement('option'); o.value=v; o.textContent=v; frag.appendChild(o); });
+    values.forEach(v => {
+      const o = document.createElement('option');
+      o.value = v;
+      // Dropdownissa poistetaan <br>
+      o.textContent = v.replace(/<br\s*\/?>/gi, " ");
+      frag.appendChild(o);
+    });
     selectEl.appendChild(frag);
   }
+
   addOptions(yearFilter,  [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b)=>b-a));
   addOptions(venueFilter, [...new Set(gigs.map(g => g.venue))].sort());
   addOptions(cityFilter,  [...new Set(gigs.map(g => g.city))].sort());
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     const keyFn = (g) => {
       if (mode === 'year')  return g.date.split(".")[2];
-      if (mode === 'venue') return normalizeVenue(g.venue);
+      if (mode === 'venue') return normalizeVenue(g.venue.replace(/<br\s*\/?>/gi, " "));
       return g[mode];
     };
 
