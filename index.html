@@ -8,47 +8,40 @@
   :root { --fg:#e0e0e0; --card:#1a1a1a; --border:#444; }
 
   html, body { margin:0; padding:0; height:100%; }
+  /* Estä iOS:n aggressiivinen tekstin kasvatus */
   html { -webkit-text-size-adjust: 100%; }
+
   body { font-family: Arial, sans-serif; color: var(--fg); }
 
+  /* Taustakuva + tumma overlay */
   .bg {
-    position: fixed;
-    inset: 0;
-    background: url('bg.png') no-repeat center center;
-    background-size: cover;
+    position: fixed; inset: 0;
+    background: url('bg.png') no-repeat center center / cover;
     z-index: -2;
   }
   .bg-dim {
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background: rgba(0,0,0,0.3);
     z-index: -1;
   }
 
-  .content {
-    position: relative;
-    min-height: 100%;
-    padding: 20px;
-  }
+  .content { position: relative; min-height: 100%; padding: 20px; }
 
-  .page-title{ display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; margin:0 0 6px; }
+  /* Otsikko */
+  .page-title{ display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; margin:0 0 10px; }
   .title-line-big{ display:flex; align-items:center; justify-content:center; gap:8px; line-height:1.1; font-size:clamp(28px,5vw,40px); font-weight:700; }
   .title-line-sub{ font-size:clamp(14px,3.3vw,20px); opacity:.95; }
+  .note-line{ font-size:12px; opacity:.9; margin-top:4px; }
+
   .logo-inline{ height:1em; vertical-align:middle; display:inline-block; }
 
-  .note-line{
-    font-size:13px;
-    opacity:0.8;
-    margin-top:4px;
-    text-align:center;
-  }
-
+  /* Kontrollit */
   .controls{ display:flex; flex-direction:column; gap:12px; margin:12px 0 10px; align-items:center; }
   .filters{
-    display: grid;
+    display:grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 10px;
-    width: min(1100px, 100%);
+    gap:10px;
+    width:min(1100px,100%);
   }
   input, select, button{
     padding:8px 10px; font-size:14px; border-radius:8px; border:1px solid var(--border);
@@ -57,22 +50,18 @@
   input{ cursor:text; }
   button{ cursor:pointer; border-color:#555; }
 
+  /* Pystyvihje – näkyy vain pienissä portrait-näytöissä */
   .portrait-hint{
-    display:none;
-    margin:6px auto 0;
-    padding:6px 10px;
-    background:rgba(26,26,26,.85);
-    border:1px solid var(--border);
-    border-radius:12px;
-    font-size:12px;
-    text-align:center;
-    width:max-content;
-    max-width:calc(100% - 24px);
+    display:none; margin:6px auto 0; padding:6px 10px;
+    background:rgba(26,26,26,.85); border:1px solid var(--border);
+    border-radius:12px; font-size:12px; text-align:center;
+    width:max-content; max-width:calc(100% - 24px);
   }
   @media (orientation:portrait) and (max-width: 640px){
     .portrait-hint{ display:block; }
   }
 
+  /* Summary + Top10 */
   .summary-bar{
     display:flex; flex-wrap:wrap; gap:10px;
     align-items:center; justify-content:center;
@@ -82,31 +71,30 @@
   .group-box{ width:min(640px,100%); background:rgba(17,17,19,.85); border:1px solid #333; border-radius:10px; padding:10px; }
   .group-box-header{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
   .group-list{
-    margin:0;
-    padding-left:12px;
-    max-height:220px;
-    overflow:auto;
-    list-style:decimal;
-    list-style-position:inside;
+    margin:0; padding-left:12px; max-height:220px; overflow:auto;
+    list-style:decimal; list-style-position:inside;
   }
   .hidden{ display:none; }
 
+  /* Taulukko */
   .table-container{ overflow-x:auto; }
   table{ width:100%; border-collapse:collapse; min-width:600px; background:rgba(26,26,26,.85); }
   th, td{ padding:8px; border-bottom:1px solid var(--border); text-align:left; white-space:nowrap; }
   th{ background:rgba(26,26,26,.95); position:sticky; top:0; z-index:1; }
   th.num, td.num{ width:1%; text-align:right; }
 
+  /* Pienet näytöt */
   @media (max-width:500px){
     .content{ padding:16px; }
     input, select, button{ padding:8px; font-size:13px; }
     .filters{ grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
   }
 
+  /* Landscape-mobiili: Top10 mahtuu ilman skrollia */
   @media (orientation: landscape) and (max-height: 450px){
     .group-box{ font-size:12px; padding:8px; max-width:100%; }
     .group-box-header{ gap:6px; margin-bottom:6px; }
-    .group-list{ padding-left:10px; max-height:32vh; }
+    .group-list{ padding-left:10px; max-height:58vh; } /* kasvatettu */
     .group-list li{ line-height:1.25; white-space:normal; }
   }
 </style>
@@ -129,13 +117,15 @@
     <div class="filters">
       <input type="text" id="search" placeholder="Search..." />
       <select id="yearFilter"><option value="">All years</option></select>
-      <select id="venueFilter"><option value="">All venues / events</option></select>
       <select id="cityFilter"><option value="">All cities</option></select>
       <select id="countryFilter"><option value="">All countries</option></select>
+      <select id="venueFilter"><option value="">All venues / events</option></select>
     </div>
+    <!-- Pystyvihje (näkyy vain mobile portraitissa) -->
     <div class="portrait-hint">Tip: For a better view, rotate your phone to landscape.</div>
   </div>
 
+  <!-- Count + Sort same row -->
   <div class="summary-bar">
     <div class="summary-count">Showing <strong id="totalCount">0</strong> gigs</div>
     <button id="toggleOrder" aria-label="Toggle sort order">Newest first ▼</button>
@@ -172,11 +162,14 @@
   </div>
 </div>
 
+<!-- Data sisään -->
 <script src="gigs.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-  const gigs = (window.gigs || []).slice();
+  const gigs = (window.gigs || []).slice(); // varmista että data löytyy
 
+  // --- DOM ---
   const tbody         = document.querySelector('#gigTable tbody');
   const yearFilter    = document.getElementById('yearFilter');
   const venueFilter   = document.getElementById('venueFilter');
@@ -188,22 +181,28 @@ document.addEventListener('DOMContentLoaded', function(){
   const groupList     = document.getElementById('groupList');
   const toggleOrderBtn= document.getElementById('toggleOrder');
 
+  // --- Apurit ---
+  // Poista <br> teksteistä valikoita ja laskentaa varten
   const stripTags = (s='') => s.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g,' ').trim();
   const venueForDropdown = (s='') => stripTags(s).replace(/\s*,\s*/g, ', ');
+  // Taulukossa sallitaan rivinvaihto
   const venueForTableHTML = (s='') => s.replace(/<br\s*\/?>/gi, '<br>');
 
-  const parseDate = d => { 
-    const [dd,mm,yy]=d.split(".");
-    const day = /^\d+$/.test(dd) ? dd : "01";
+  // Päivämäärä: sallitaan "XX" päivän tilalla -> tulkitaan 01 järjestystä varten
+  const parseDate = d => {
+    const [dd,mm,yy] = d.split(".");
+    const day = /^\d+$/.test(dd) ? dd.padStart(2,'0') : "01";
     return new Date(`${yy}-${mm}-${day}T00:00:00`);
   };
 
+  // Järjestys
   let sortDir = localStorage.getItem('kemopetrol_sort_dir') || 'desc';
   const updateToggleLabel = () => {
     toggleOrderBtn.textContent = (sortDir === 'desc') ? 'Newest first ▼' : 'Oldest first ▲';
   };
   updateToggleLabel();
 
+  // Täytä filtterit
   function addOptions(selectEl, values){
     const frag = document.createDocumentFragment();
     values.forEach(v => { const o=document.createElement('option'); o.value=v; o.textContent=v; frag.appendChild(o); });
@@ -211,14 +210,12 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   addOptions(yearFilter,  [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b)=>b-a));
-
-  const rawVenues = gigs.map(g => g.venue);
-  const uiVenuesSet = new Map();
-  rawVenues.forEach(v => uiVenuesSet.set(venueForDropdown(v), true));
-  addOptions(venueFilter, [...uiVenuesSet.keys()].sort());
-
   addOptions(cityFilter,  [...new Set(gigs.map(g => g.city))].sort());
   addOptions(countryFilter,[...new Set(gigs.map(g => g.country))].sort());
+  // Venues (näytetään <br> siivottuna)
+  const uiVenuesSet = new Map();
+  gigs.map(g => g.venue).forEach(v => uiVenuesSet.set(venueForDropdown(v), true));
+  addOptions(venueFilter, [...uiVenuesSet.keys()].sort());
 
   const getSorted = rows => {
     const copy = rows.slice().sort((a,b)=>parseDate(a.date)-parseDate(b.date));
@@ -229,13 +226,14 @@ document.addEventListener('DOMContentLoaded', function(){
   function applyFilters(rows){
     const s  = (searchInput.value || '').toLowerCase();
     const yf = yearFilter.value;
-    const vf = venueFilter.value;
+    const vf = (venueFilter.value || '').toLowerCase(); // UI-muotoinen
     const cf = cityFilter.value;
     const cof= countryFilter.value;
+
     return rows.filter(g => {
       const gVenueUI = venueForDropdown(g.venue).toLowerCase();
       return (!yf || g.date.endsWith(yf)) &&
-             (!vf || gVenueUI === vf.toLowerCase()) &&
+             (!vf || gVenueUI === vf) &&
              (!cf || g.city === cf) &&
              (!cof || g.country === cof) &&
              (
@@ -263,6 +261,7 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
+  // Top 10
   function normalizeVenue(name){
     const original = stripTags(name || '').trim();
     const aliasRules = [
@@ -286,6 +285,7 @@ document.addEventListener('DOMContentLoaded', function(){
       { re:/järvenpään\s*casino\b/i,             name:'Järvenpään Casino' },
     ];
     for (const a of aliasRules) if (a.re.test(original)) return a.name;
+
     const parts = original.split(',').map(p => p.trim()).filter(Boolean);
     if (parts.length > 1){
       for (const part of parts) for (const a of aliasRules){
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const keyFn = (g) => {
       if (mode === 'year')  return g.date.split(".")[2];
       if (mode === 'venue') return normalizeVenue(g.venue);
-      return g[mode];
+      return g[mode]; // city / country
     };
 
     const counts = {};
@@ -335,6 +335,7 @@ document.addEventListener('DOMContentLoaded', function(){
     renderTop10(filtered);
   }
 
+  // Tapahtumat
   searchInput.addEventListener('input', render);
   [yearFilter, venueFilter, cityFilter, countryFilter, groupBy].forEach(el => el.addEventListener('change', render));
   toggleOrderBtn.addEventListener('click', () => {
@@ -344,6 +345,7 @@ document.addEventListener('DOMContentLoaded', function(){
     render();
   });
 
+  // Init
   render();
 });
 </script>
