@@ -61,11 +61,11 @@
   .group-box-header{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
   .group-list{
     margin:0;
-    padding-left:12px;               /* pienempi sisennys */
+    padding-left:12px;
     max-height:220px;
     overflow:auto;
     list-style:decimal;
-    list-style-position:inside;      /* numerot näkyviin laatikon sisällä */
+    list-style-position:inside;
   }
   .hidden{ display:none; }
 
@@ -171,56 +171,50 @@ document.addEventListener('DOMContentLoaded', function(){
   const toggleOrderBtn= document.getElementById('toggleOrder');
 
   /* ------- Apurit ------- */
-  // 1) Venuen puhdistus: poista <br> normalisointia ja valikkoja varten
   const stripTags = (s='') => s.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g,' ').trim();
-  const venueForDropdown = (s='') =>
-    stripTags(s).replace(/\s*,\s*/g, ', '); // pilkun jälkeen väli
-
-  // 2) Tableen sallitaan rivinvaihto: korvaa <br> -> <br>
+  const venueForDropdown = (s='') => stripTags(s).replace(/\s*,\s*/g, ', ');
   const venueForTableHTML = (s='') => s.replace(/<br\s*\/?>/gi, '<br>');
 
-  // Päivämäärä
-  const parseDate = d => { const [dd,mm,yy]=d.split("."); return new Date(`${yy}-${mm}-${dd}T00:00:00`); };
+  // Päivämäärä (sallii "XX" päivän tilalla, tulkitsee sen 01:ksi järjestystä varten)
+  const parseDate = d => { 
+    const [dd,mm,yy]=d.split(".");
+    const day = /^\d+$/.test(dd) ? dd : "01";
+    return new Date(`${yy}-${mm}-${day}T00:00:00`);
+  };
 
   // Järjestys
-  let sortDir = localStorage.getItem('kemopetrol_sort_dir') || 'desc'; // 'desc' = newest first
+  let sortDir = localStorage.getItem('kemopetrol_sort_dir') || 'desc';
   const updateToggleLabel = () => {
     toggleOrderBtn.textContent = (sortDir === 'desc') ? 'Newest first ▼' : 'Oldest first ▲';
   };
   updateToggleLabel();
 
-  // Filtterivaihtoehtojen lisäys
   function addOptions(selectEl, values){
     const frag = document.createDocumentFragment();
     values.forEach(v => { const o=document.createElement('option'); o.value=v; o.textContent=v; frag.appendChild(o); });
     selectEl.appendChild(frag);
   }
 
-  // Vuodet
   addOptions(yearFilter,  [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b)=>b-a));
 
-  // Venuet (näytä ilman <br>, mutta suodata osuu alkuperäiseen)
   const rawVenues = gigs.map(g => g.venue);
-  const uiVenuesSet = new Map(); // key: UI-nimi, val: ensimmäinen raw-nimi (ei väliä, arvoa ei käytetä)
+  const uiVenuesSet = new Map();
   rawVenues.forEach(v => uiVenuesSet.set(venueForDropdown(v), true));
   addOptions(venueFilter, [...uiVenuesSet.keys()].sort());
 
-  // City & country
   addOptions(cityFilter,  [...new Set(gigs.map(g => g.city))].sort());
   addOptions(countryFilter,[...new Set(gigs.map(g => g.country))].sort());
 
-  // Sorttaus
   const getSorted = rows => {
-    const copy = rows.slice().sort((a,b)=>parseDate(a.date)-parseDate(b.date)); // oldest->newest
-    if (sortDir === 'desc') copy.reverse();                                     // newest->oldest
+    const copy = rows.slice().sort((a,b)=>parseDate(a.date)-parseDate(b.date));
+    if (sortDir === 'desc') copy.reverse();
     return copy;
   };
 
-  // Filtterit (venue: osuu dropdown-nimeen -> vertaillaan puhdistetulla versiolla)
   function applyFilters(rows){
     const s  = (searchInput.value || '').toLowerCase();
     const yf = yearFilter.value;
-    const vf = venueFilter.value; // tämä on UI-muotoinen
+    const vf = venueFilter.value;
     const cf = cityFilter.value;
     const cof= countryFilter.value;
     return rows.filter(g => {
@@ -238,12 +232,11 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
-  // Renderöinti
   function renderTable(rows){
     tbody.innerHTML = '';
     rows.forEach((g, idx) => {
       const tr = document.createElement('tr');
-      const venueHTML = venueForTableHTML(g.venue); // sallitaan <br> taulukossa
+      const venueHTML = venueForTableHTML(g.venue);
       tr.innerHTML = `
         <td class="num">${idx + 1}</td>
         <td>${g.date}</td>
@@ -255,7 +248,6 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 
-  // Top 10: venue normalisointi laskee ilman <br>, sekä yhdistää muut aliasit
   function normalizeVenue(name){
     const original = stripTags(name || '').trim();
     const aliasRules = [
@@ -272,7 +264,6 @@ document.addEventListener('DOMContentLoaded', function(){
       { re:/\bklubi\b/i,                         name:'Klubi' },
       { re:/kaapelitehdas|cable\s*factory/i,     name:'Kaapelitehdas' },
       { re:/provinssi(\s*-?\s*rock|rock)?\b/i,   name:'Provinssi' },
-      /* erilliset, ei niputeta geneerisesti */
       { re:/hullu\s*poro\s*areena\b/i,           name:'Hullu Poro Areena' },
       { re:/seinäjoen\s*areena\b/i,              name:'Seinäjoen Areena' },
       { re:/nouveau\s*casino\b/i,                name:'Nouveau Casino' },
@@ -280,8 +271,6 @@ document.addEventListener('DOMContentLoaded', function(){
       { re:/järvenpään\s*casino\b/i,             name:'Järvenpään Casino' },
     ];
     for (const a of aliasRules) if (a.re.test(original)) return a.name;
-
-    // Pilkun jälkeen oleva tunnettu paikka (esim. "Ruma-klubi, Tavastia")
     const parts = original.split(',').map(p => p.trim()).filter(Boolean);
     if (parts.length > 1){
       for (const part of parts) for (const a of aliasRules){
@@ -300,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const keyFn = (g) => {
       if (mode === 'year')  return g.date.split(".")[2];
       if (mode === 'venue') return normalizeVenue(g.venue);
-      return g[mode]; // city / country
+      return g[mode];
     };
 
     const counts = {};
@@ -331,7 +320,6 @@ document.addEventListener('DOMContentLoaded', function(){
     renderTop10(filtered);
   }
 
-  // Tapahtumat
   searchInput.addEventListener('input', render);
   [yearFilter, venueFilter, cityFilter, countryFilter, groupBy].forEach(el => el.addEventListener('change', render));
   toggleOrderBtn.addEventListener('click', () => {
@@ -341,7 +329,6 @@ document.addEventListener('DOMContentLoaded', function(){
     render();
   });
 
-  // Init
   render();
 });
 </script>
