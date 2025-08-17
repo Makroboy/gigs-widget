@@ -155,7 +155,7 @@ window.gigs = [
   { date: "02.11.2002", venue: "Amarillo", city: "Vaasa", country: "Finland" },
   { date: "26.10.2002", venue: "Red Club", city: "St. Petersburg", country: "Russia" },
   { date: "18.10.2002", venue: "Nevada", city: "Porvoo", country: "Finland" },
-  { date: "12.10.2002", venue: "Morning Glory,<BR> MTV Nordic (TV)", city: "Stockholm", country: "Sweden" },
+  { date: "10.10.2002", venue: "Morning Glory,<BR> MTV Nordic (TV)", city: "Stockholm", country: "Sweden" },
   { date: "28.09.2002", venue: "Akateeminen Startti", city: "Kuopio", country: "Finland" },
   { date: "20.09.2002", venue: "Nosturi (private)", city: "Helsinki", country: "Finland" },
   { date: "12.09.2002", venue: "MTV3 Live Makasiineilla (TV)", city: "Helsinki", country: "Finland" },
