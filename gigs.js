@@ -127,6 +127,8 @@ window.gigs = [
   { date: "10.04.2004", venue: "Tapiola Garden", city: "Espoo", country: "Finland" },
   { date: "08.04.2004", venue: "YO-talo", city: "Tampere", country: "Finland" },
   { date: "09.04.2004", venue: "Nite Train", city: "Imatra", country: "Finland" },
+  { date: "31.03.2004", venue: "Anttila, City Center", city: "Helsinki", country: "Finland" },
+  { date: "26.03.2004", venue: "Tulisuudelma,<BR>Radio Suomipop -bileet", city: "Vantaa", country: "Finland" },
   { date: "25.03.2004", venue: "Hyppönen Enbuske Experience,<BR>Nelonen (TV, unplugged)", city: "Helsinki", country: "Finland" },
   { date: "20.03.2004", venue: "SubTV Sessions,<BR>(TV, unplugged)", city: "Helsinki", country: "Finland" },
 
