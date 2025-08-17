@@ -40,7 +40,7 @@
   .logo-inline{ height:1em; vertical-align:middle; display:inline-block; }
 
   /* Kontrollit */
-  .controls{ display:flex; flex-direction:column; gap:12px; margin:12px 0 14px; align-items:center; }
+  .controls{ display:flex; flex-direction:column; gap:12px; margin:12px 0 10px; align-items:center; }
   .filters{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -54,8 +54,29 @@
   input{ cursor:text; }
   button{ cursor:pointer; border-color:#555; }
 
+  /* Pystyvihje – näkyy vain pienissä portrait-näytöissä */
+  .portrait-hint{
+    display:none;
+    margin:6px auto 0;
+    padding:6px 10px;
+    background:rgba(26,26,26,.85);
+    border:1px solid var(--border);
+    border-radius:12px;
+    font-size:12px;
+    text-align:center;
+    width:max-content;
+    max-width:calc(100% - 24px);
+  }
+  @media (orientation:portrait) and (max-width: 640px){
+    .portrait-hint{ display:block; }
+  }
+
   /* Summary + Top10 */
-  .summary-bar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin:8px 0 16px; font-size:14px; }
+  .summary-bar{
+    display:flex; flex-wrap:wrap; gap:10px;
+    align-items:center; justify-content:center;
+    margin:10px 0 16px; font-size:14px;
+  }
   .summary-count{ padding:6px 10px; background:rgba(26,26,26,.85); border:1px solid var(--border); border-radius:8px; }
   .group-box{ width:min(640px,100%); background:rgba(17,17,19,.85); border:1px solid #333; border-radius:10px; padding:10px; }
   .group-box-header{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
@@ -113,11 +134,14 @@
       <select id="cityFilter"><option value="">All cities</option></select>
       <select id="countryFilter"><option value="">All countries</option></select>
     </div>
-    <button id="toggleOrder" aria-label="Toggle sort order">Newest first ▼</button>
+    <!-- Pystyvihje (näkyy vain mobile portraitissa) -->
+    <div class="portrait-hint">Tip: For a better view, rotate your phone to landscape.</div>
   </div>
 
+  <!-- Count + Sort same row -->
   <div class="summary-bar">
     <div class="summary-count">Showing <strong id="totalCount">0</strong> gigs</div>
+    <button id="toggleOrder" aria-label="Toggle sort order">Newest first ▼</button>
 
     <div class="group-box">
       <div class="group-box-header">
@@ -175,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function(){
   const venueForDropdown = (s='') => stripTags(s).replace(/\s*,\s*/g, ', ');
   const venueForTableHTML = (s='') => s.replace(/<br\s*\/?>/gi, '<br>');
 
-  // Päivämäärä (sallii "XX" päivän tilalla, tulkitsee sen 01:ksi järjestystä varten)
+  // Päivämäärä (sallii "XX" päivän tilalla, tulkitsee 01:ksi järjestystä varten)
   const parseDate = d => { 
     const [dd,mm,yy]=d.split(".");
     const day = /^\d+$/.test(dd) ? dd : "01";
@@ -320,6 +344,7 @@ document.addEventListener('DOMContentLoaded', function(){
     renderTop10(filtered);
   }
 
+  // Tapahtumat
   searchInput.addEventListener('input', render);
   [yearFilter, venueFilter, cityFilter, countryFilter, groupBy].forEach(el => el.addEventListener('change', render));
   toggleOrderBtn.addEventListener('click', () => {
@@ -329,6 +354,7 @@ document.addEventListener('DOMContentLoaded', function(){
     render();
   });
 
+  // Init
   render();
 });
 </script>
