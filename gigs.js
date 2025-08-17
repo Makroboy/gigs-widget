@@ -146,6 +146,7 @@ window.gigs = [
   { date: "05.12.2002", venue: "Klubi", city: "Tampere", country: "Finland" },
   { date: "04.12.2002", venue: "Lutakko", city: "Jyväskylä", country: "Finland" },
   { date: "29.11.2002", venue: "Urheilutalo", city: "Riihimäki", country: "Finland" },
+  { date: "28.11.2002", venue: "Sipuli (private)", city: "Helsinki", country: "Finland" },
   { date: "23.11.2002", venue: "Club B-52", city: "Ähtäri", country: "Finland" },
   { date: "22.11.2002", venue: "Musiikkikeskus", city: "Kuopio", country: "Finland" },
   { date: "19.11.2002", venue: "Myyrmäkihalli,<BR>(memorial concert)", city: "Vantaa", country: "Finland" },
