@@ -111,7 +111,7 @@ window.gigs = [
   { date: "25.06.2004", venue: "Midnight Party Planet,<BR>Tykkimäki", city: "Kouvola", country: "Finland" },
   { date: "19.06.2004", venue: "Provinssirock", city: "Seinäjoki", country: "Finland" },
   { date: "28.05.2004", venue: "FinnFest", city: "Hamburg", country: "Germany" },
-  { date: "12.05.2004", venue: "Tavastia", city: "Helsinki", country: "Finland" },
+  { date: "12.05.2004", venue: "Ruma-klubi, Tavastia", city: "Helsinki", country: "Finland" },
   { date: "08.05.2004", venue: "Nevada", city: "Porvoo", country: "Finland" },
   { date: "06.05.2004", venue: "Panama Jack", city: "Kerava", country: "Finland" },
   { date: "01.05.2004", venue: "Tivoli", city: "Rovaniemi", country: "Finland" },
