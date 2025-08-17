@@ -240,7 +240,7 @@ window.gigs = [
   { date: "08.11.2000", venue: "Villikissa", city: "Iisalmi", country: "Finland" },
   { date: "07.11.2000", venue: "Pikkuwappu, Foxia", city: "Oulu", country: "Finland" },
   { date: "28.10.2000", venue: "Urban Expo,<BR>Kaapelitehdas", city: "Helsinki", country: "Finland" },
-  { date: "28.10.2000", venue: "Urmas-tapahtuma", city: "Helsinki", country: "Finland" },
+  { date: "28.10.2000", venue: "Urmas-tapahtuma,<BR>Pirkkolahalli", city: "Helsinki", country: "Finland" },
   { date: "08.10.2000", venue: "Cafe Medicin Man", city: "Hyvinkää", country: "Finland" },
   { date: "06.10.2000", venue: "Areena", city: "Seinäjoki", country: "Finland" },
   { date: "05.10.2000", venue: "Raumanlinna", city: "Rauma", country: "Finland" },
