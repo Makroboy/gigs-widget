@@ -157,6 +157,7 @@ window.gigs = [
   { date: "18.10.2002", venue: "Nevada", city: "Porvoo", country: "Finland" },
   { date: "12.10.2002", venue: "Morning Glory,<BR> MTV Nordic (TV)", city: "Stockholm", country: "Sweden" },
   { date: "28.09.2002", venue: "Akateeminen Startti", city: "Kuopio", country: "Finland" },
+  { date: "20.09.2002", venue: "Nosturi (private)", city: "Helsinki", country: "Finland" },
   { date: "12.09.2002", venue: "MTV3 Live Makasiineilla (TV)", city: "Helsinki", country: "Finland" },
   { date: "03.09.2002", venue: "HP Bazaar Camp", city: "Beijing", country: "China" },
   { date: "17.08.2002", venue: "Rock The Globe", city: "Kuopio", country: "Finland" },
