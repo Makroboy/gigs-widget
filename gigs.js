@@ -273,6 +273,7 @@ window.gigs = [
   { date: "09.06.2000", venue: "DBTL", city: "Turku", country: "Finland" },
   { date: "03.06.2000", venue: "Club 25", city: "Vaasa", country: "Finland" },
   { date: "27.05.2000", venue: "Offrock", city: "Kausala", country: "Finland" },
+  { date: "25.05.2000", venue: "Ravintola Motti", city: "Helsinki", country: "Finland" },
   { date: "23.05.2000", venue: "Muotinäytös, Pravda", city: "Helsinki", country: "Finland" },
   { date: "19.05.2000", venue: "Club Moo", city: "Pori", country: "Finland" },
   { date: "18.05.2000", venue: "Tähti", city: "Kuopio", country: "Finland" },
