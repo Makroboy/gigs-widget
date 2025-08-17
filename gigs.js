@@ -297,7 +297,7 @@ window.gigs = [
   { date: "25.11.1999", venue: "Kaapelitehdas, (private)", city: "Helsinki", country: "Finland" },
   { date: "24.11.1999", venue: "Bar 33", city: "Helsinki", country: "Finland" },
   { date: "11.11.1999", venue: "Jump Inn", city: "Helsinki", country: "Finland" },
-  { date: "24.10.1999", venue: "Vuosaaren telakka, (private)", city: "Helsinki", country: "Finland" },
+  { date: "16.10.1999", venue: "Vuosaaren telakka, (private)", city: "Helsinki", country: "Finland" },
   { date: "09.10.1999", venue: "Uusi yo-talo", city: "Helsinki", country: "Finland" },
   { date: "11.09.1999", venue: "Saunabar", city: "Helsinki", country: "Finland" },
   { date: "26.08.1999", venue: "Kahvila Piritta", city: "Helsinki", country: "Finland" },
