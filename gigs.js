@@ -254,6 +254,7 @@ window.gigs = [
   { date: "08.09.2000", venue: "Puhdas elämä lapselle,<BR>Olympiastadion", city: "Helsinki", country: "Finland" },
   { date: "02.09.2000", venue: "Tavastia", city: "Helsinki", country: "Finland" },
   { date: "25.08.2000", venue: "Oulu Music Video Festival", city: "Oulu", country: "Finland" },
+  { date: "22.08.2000", venue: "Forum (private)", city: "Helsinki", country: "Finland" },
   { date: "19.08.2000", venue: "Sarjakuvafestivaali,<BR>VR:n makasiinit", city: "Helsinki", country: "Finland" },
   { date: "18.08.2000", venue: "Pluto 2000,<BR>Art & Music Festival", city: "Pietarsaari", country: "Finland" },
   { date: "12.08.2000", venue: "Paltamon syysrysäys", city: "Paltamo", country: "Finland" },
