@@ -8,7 +8,7 @@
   :root { --fg:#e0e0e0; --card:#1a1a1a; --border:#444; }
 
   html, body { margin:0; padding:0; height:100%; }
-  html { -webkit-text-size-adjust: 100%; } /* iOS font boost off */
+  html { -webkit-text-size-adjust: 100%; }
   body { font-family: Arial, sans-serif; color: var(--fg); }
 
   /* Background + dim */
@@ -39,7 +39,7 @@
   input{ cursor:text; }
   button{ cursor:pointer; border-color:#555; }
 
-  /* Small portrait hint (keeps existing tiny hint) */
+  /* Small portrait hint */
   .portrait-hint{
     display:none; margin:6px auto 0; padding:6px 10px;
     background:rgba(26,26,26,.85); border:1px solid var(--border);
@@ -85,19 +85,6 @@
     .group-box-header{ gap:6px; margin-bottom:6px; }
     .group-list{ padding-left:10px; max-height:58vh; }
     .group-list li{ line-height:1.25; white-space:normal; }
-  }
-
-  /* FULL-SCREEN rotate overlay (shows only small portrait) */
-  .orientation-overlay{
-    position: fixed; inset: 0; display: none;
-    align-items: center; justify-content: center; flex-direction: column; gap: 16px;
-    background: #000; color: #fff; text-align: center; padding: 24px; z-index: 9999;
-  }
-  .orientation-overlay .icon{ width:120px; height:120px; opacity:.95; }
-  .orientation-overlay p{ max-width: 26ch; margin: 0; font-size: 15px; line-height: 1.35; opacity:.95; }
-  .orientation-overlay button{ margin-top:6px; padding:8px 14px; border-radius:10px; border:1px solid #444; background:#1a1a1a; color:#fff; cursor:pointer; }
-  @media (orientation: portrait) and (max-width: 700px){
-    .orientation-overlay:not(.hidden){ display:flex; }
   }
 </style>
 </head>
@@ -169,7 +156,6 @@
 document.addEventListener('DOMContentLoaded', function(){
   const gigs = (window.gigs || []).slice();
 
-  /* DOM */
   const tbody         = document.querySelector('#gigTable tbody');
   const yearFilter    = document.getElementById('yearFilter');
   const venueFilter   = document.getElementById('venueFilter');
@@ -181,12 +167,10 @@ document.addEventListener('DOMContentLoaded', function(){
   const groupList     = document.getElementById('groupList');
   const toggleOrderBtn= document.getElementById('toggleOrder');
 
-  /* Helpers */
   const stripTags = (s='') => s.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g,' ').trim();
   const venueForDropdown = (s='') => stripTags(s).replace(/\s*,\s*/g, ', ');
   const venueForTableHTML = (s='') => s.replace(/<br\s*\/?>/gi, '<br>');
 
-  // Allow "XX" day -> use 01 for sorting
   const parseDate = d => {
     const [dd,mm,yy] = d.split(".");
     const day = /^\d+$/.test(dd) ? dd.padStart(2,'0') : "01";
@@ -204,7 +188,6 @@ document.addEventListener('DOMContentLoaded', function(){
     selectEl.appendChild(frag);
   }
 
-  /* Populate filters */
   addOptions(yearFilter,  [...new Set(gigs.map(g => g.date.split(".")[2]))].sort((a,b)=>b-a));
   addOptions(cityFilter,  [...new Set(gigs.map(g => g.city))].sort());
   addOptions(countryFilter,[...new Set(gigs.map(g => g.country))].sort());
@@ -340,43 +323,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
   render();
 });
-</script>
-
-<!-- FULL-SCREEN ROTATE OVERLAY -->
-<div class="orientation-overlay hidden" id="rotateOverlay" role="dialog" aria-live="polite" aria-label="Rotate phone hint">
-  <svg class="icon" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <rect x="78" y="10" width="32" height="68" rx="6" fill="#555"/>
-    <rect x="84" y="16" width="20" height="56" rx="3" fill="#222"/>
-    <rect x="10" y="84" width="68" height="32" rx="6" fill="#fff"/>
-    <rect x="16" y="90" width="56" height="20" rx="3" fill="#111"/>
-    <path d="M62 42c0-1.7 1.3-3 3-3h21l-7-7a3 3 0 1 1 4.2-4.2l12.5 12.5a3 3 0 0 1 0 4.2L83.2 57.8A3 3 0 1 1 79 53l7-7H65a3 3 0 0 1-3-3z" fill="#fff"/>
-  </svg>
-  <p>Rotate your phone to view the gig archive</p>
-  <button id="rotateDismiss" type="button">Got it</button>
-</div>
-
-<script>
-(function(){
-  const overlay = document.getElementById('rotateOverlay');
-  const DISMISSED_KEY = 'rotate_overlay_dismissed';
-
-  function shouldShowOverlay(){
-    const dismissed = localStorage.getItem(DISMISSED_KEY) === '1';
-    const isPortrait = window.matchMedia('(orientation: portrait)').matches;
-    const smallWidth = window.innerWidth <= 700;
-    return !dismissed && isPortrait && smallWidth;
-  }
-  function updateOverlay(){
-    overlay.classList.toggle('hidden', !shouldShowOverlay());
-  }
-  updateOverlay();
-  window.addEventListener('resize', updateOverlay);
-  window.addEventListener('orientationchange', updateOverlay);
-  document.getElementById('rotateDismiss').addEventListener('click', () => {
-    localStorage.setItem(DISMISSED_KEY, '1');
-    updateOverlay();
-  });
-})();
 </script>
 
 </body>
