@@ -155,7 +155,7 @@ window.gigs = [
   { date: "28.11.2002", venue: "Sipuli (private)", city: "Helsinki", country: "Finland" },
   { date: "23.11.2002", venue: "Club B-52", city: "Ähtäri", country: "Finland" },
   { date: "22.11.2002", venue: "Musiikkikeskus", city: "Kuopio", country: "Finland" },
-  { date: "19.11.2002", venue: "Myyrmäkihalli,<BR>(memorial concert)", city: "Vantaa", country: "Finland" },
+  { date: "19.11.2002", venue: "Myyrmannin muistokonsertti,<BR>Myyrmäkihalli", city: "Vantaa", country: "Finland" },
   { date: "15.11.2002", venue: "Rubin 2000", city: "Kouvola", country: "Finland" },
   { date: "13.11.2002", venue: "Ruma-klubi, Tavastia", city: "Helsinki", country: "Finland" },
   { date: "01.11.2002", venue: "Toisto-klubi,<BR>Hotelli Ellivuori", city: "Vammala", country: "Finland" },
