@@ -198,6 +198,7 @@ window.gigs = [
   { date: "18.04.2002", venue: "Kåren", city: "Turku", country: "Finland" },
   { date: "17.04.2002", venue: "Paradise Garden", city: "Salo", country: "Finland" },
   { date: "13.04.2002", venue: "Raumanlinna", city: "Rauma", country: "Finland" },
+  { date: "11.04.2002", venue: "(private)", city: "Espoo", country: "Finland" },
   { date: "09.04.2002", venue: "Kimmel", city: "Joensuu", country: "Finland" },
   { date: "03.04.2002", venue: "Vekaranjärven sotilaskoti", city: "Valkeala", country: "Finland" },
   { date: "23.03.2002", venue: "Hotelli Ylivieska", city: "Ylivieska", country: "Finland" },
