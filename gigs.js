@@ -62,7 +62,7 @@ window.gigs = [
   { date: "26.08.2006", venue: "Kesäpotpuri, Pakkahuone", city: "Tampere", country: "Finland" },
   { date: "12.08.2006", venue: "Meijerirock", city: "Espoo", country: "Finland" },
   { date: "29.07.2006", venue: "Qstock", city: "Oulu", country: "Finland" },
-  { date: "28.07.2006", venue: "Down By The Kemijoki", city: "Rovaniemi", country: "Finland" },
+  { date: "28.07.2006", venue: "Down By The Kemijoki,<BR>Tivoli", city: "Rovaniemi", country: "Finland" },
   { date: "26.05.2006", venue: "Stockholm Diskotek", city: "Helsinki", country: "Finland" },
   { date: "10.05.2006", venue: "Giggling Marlin", city: "Turku", country: "Finland" },
   { date: "08.05.2006", venue: "Mobile Monday,<BR>Wanha satama", city: "Helsinki", country: "Finland" },
@@ -83,8 +83,9 @@ window.gigs = [
   { date: "24.03.2006", venue: "Kuudes linja,<BR>(album release)", city: "Helsinki", country: "Finland" },
 
   // 2005
+  { date: "09.04.2005", venue: "Tivoli 15 -vuotta", city: "Rovaniemi", country: "Finland" },
   { date: "06.02.2005", venue: "Goom-risteily", city: "M/S Romantika", country: "Finland" },
-  { date: "08.01.2005", venue: "Nosturi", city: "Helsinki", country: "Finland" },
+  { date: "08.01.2005", venue: "Hyväntekeväisyyskonsertti<BR>Aasian katastrofin uhrien hyväksi,<BR>Nosturi", city: "Helsinki", country: "Finland" },
 
   // 2004
   { date: "18.12.2004", venue: "Tavastia", city: "Helsinki", country: "Finland" },
@@ -165,7 +166,7 @@ window.gigs = [
   { date: "28.09.2002", venue: "Akateeminen Startti", city: "Kuopio", country: "Finland" },
   { date: "20.09.2002", venue: "Nosturi (private)", city: "Helsinki", country: "Finland" },
   { date: "12.09.2002", venue: "MTV3 Live Makasiineilla (TV)", city: "Helsinki", country: "Finland" },
-  { date: "03.09.2002", venue: "HP Bazaar Camp", city: "Beijing", country: "China" },
+  { date: "03.09.2002", venue: "HP Bazaar Camp,<BR>Shangri-La Hotel", city: "Beijing", country: "China" },
   { date: "17.08.2002", venue: "Rock The Globe", city: "Kuopio", country: "Finland" },
   { date: "10.08.2002", venue: "Välipuistorock", city: "Lapua", country: "Finland" },
   { date: "09.08.2002", venue: "Kulttuurikeskus Poleeni", city: "Pieksämäki", country: "Finland" },
@@ -202,7 +203,7 @@ window.gigs = [
   { date: "23.03.2002", venue: "Hotelli Ylivieska", city: "Ylivieska", country: "Finland" },
 
   // 2001
-  { date: "25.10.2001", venue: "Universidad Complutense de Madrid", city: "Madrid", country: "Spain" },
+  { date: "25.10.2001", venue: "CMU San Juan Evangelista,<BR>Universidad Complutense de Madrid", city: "Madrid", country: "Spain" },
   { date: "29.08.2001", venue: "Huvilateltta", city: "Helsinki", country: "Finland" },
   { date: "18.08.2001", venue: "Popkalaset", city: "Tammisaari", country: "Finland" },
   { date: "17.08.2001", venue: "Popkalaset", city: "Porvoo", country: "Finland" },
@@ -272,7 +273,7 @@ window.gigs = [
   { date: "12.08.2000", venue: "Paltamon syysrysäys", city: "Paltamo", country: "Finland" },
   { date: "06.08.2000", venue: "Ankkarock", city: "Korso", country: "Finland" },
   { date: "04.08.2000", venue: "Koneisto", city: "Turku", country: "Finland" },
-  { date: "29.07.2000", venue: "Down By The Kemijoki", city: "Rovaniemi", country: "Finland" },
+  { date: "29.07.2000", venue: "Down By The Kemijoki,<BR>Tivoli", city: "Rovaniemi", country: "Finland" },
   { date: "22.07.2000", venue: "Koriaroll", city: "Koria", country: "Finland" },
   { date: "16.07.2000", venue: "Tammerfest", city: "Tampere", country: "Finland" },
   { date: "08.07.2000", venue: "Ilosaarirock", city: "Joensuu", country: "Finland" },
