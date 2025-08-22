@@ -271,7 +271,7 @@ window.gigs = [
   { date: "02.09.2000", venue: "Tavastia", city: "Helsinki", country: "Finland" },
   { date: "25.08.2000", venue: "Oulu Music Video Festival,<BR>45 Special", city: "Oulu", country: "Finland" },
   { date: "25.08.2000", venue: "The 5th Annual Air Guitar World Championships,<BR>Oulu Music Video Festival,<BR>Oulun tori", city: "Oulu", country: "Finland" },
-  { date: "22.08.2000", venue: "Forum (private)", city: "Helsinki", country: "Finland" },
+  { date: "22.08.2000", venue: "Ravintola Hullu Kukko,<BR>Forum (private)", city: "Helsinki", country: "Finland" },
   { date: "19.08.2000", venue: "Sarjakuvafestivaali,<BR>VR:n makasiinit", city: "Helsinki", country: "Finland" },
   { date: "18.08.2000", venue: "Pluto 2000,<BR>Art & Music Festival", city: "Pietarsaari", country: "Finland" },
   { date: "12.08.2000", venue: "Paltamon syysrysäys", city: "Paltamo", country: "Finland" },
