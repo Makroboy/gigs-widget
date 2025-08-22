@@ -229,10 +229,10 @@ window.gigs = [
   { date: "03.03.2001", venue: "Polideportivo Principe Felipe", city: "Zaragoza", country: "Spain" },
   { date: "02.03.2001", venue: "Salamandra", city: "Valladolid", country: "Spain" },
   { date: "01.03.2001", venue: "La Santa Sede", city: "Oviedo", country: "Spain" },
-  { date: "??.02.2001", venue: "Música sí, RTVE (TV)", city: "Madrid", country: "Spain" },
-  { date: "??.02.2001", venue: "Los conciertos de Radio 3,<BR>RTVE (TV)", city: "Madrid", country: "Spain" },
   { date: "07.02.2001", venue: "Sala Arena", city: "Madrid", country: "Spain" },
+  { date: "07.02.2001", venue: "Música sí, RTVE (TV)", city: "Madrid", country: "Spain" },
   { date: "06.02.2001", venue: "Razzmatazz 2", city: "Barcelona", country: "Spain" },
+  { date: "05.02.2001", venue: "Los conciertos de Radio 3,<BR>RTVE (TV)", city: "Madrid", country: "Spain" },
   { date: "03.02.2001", venue: "Emma Gaala 2000, Finlandia-talo", city: "Helsinki", country: "Finland" },
   { date: "26.01.2001", venue: "Työväentalo", city: "Kangasniemi", country: "Finland" },
 
