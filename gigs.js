@@ -262,7 +262,7 @@ window.gigs = [
   { date: "03.10.2000", venue: "Lakinlaskiaiset, Otaniemi", city: "Espoo", country: "Finland" },
   { date: "30.09.2000", venue: "Tuiskulan lava", city: "Nivala", country: "Finland" },
   { date: "29.09.2000", venue: "Club 25", city: "Vaasa", country: "Finland" },
-  { date: "25.09.2000", venue: "In The City", city: "Manchester", country: "United Kingdom" },
+  { date: "25.09.2000", venue: "Generation X,<BR>In The City", city: "Manchester", country: "United Kingdom" },
   { date: "23.09.2000", venue: "Akateeminen Startti", city: "Kuopio", country: "Finland" },
   { date: "22.09.2000", venue: "Kåren", city: "Turku", country: "Finland" },
   { date: "21.09.2000", venue: "Olympiateltta, Rautatientori", city: "Helsinki", country: "Finland" },
