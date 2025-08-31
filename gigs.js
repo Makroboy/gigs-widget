@@ -1,5 +1,7 @@
 window.gigs = [
   // 2025
+  { date: "30.08.2025", venue: "Linnanvirta puistojuhla", city: "Kajaani", country: "Finland" },
+  { date: "29.08.2025", venue: "Höyhtyän Ostarifestari VI", city: "Oulu", country: "Finland" },
   { date: "09.08.2025", venue: "Tampere City Festival", city: "Tampere", country: "Finland" },
   { date: "01.08.2025", venue: "Tavastia", city: "Helsinki", country: "Finland" },
   { date: "05.07.2025", venue: "Ilovaari", city: "Joensuu", country: "Finland" },
