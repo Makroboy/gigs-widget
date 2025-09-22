@@ -89,6 +89,7 @@ window.gigs = [
   { date: "24.03.2006", venue: "Kuudes linja,<BR>(album release)", city: "Helsinki", country: "Finland" },
 
   // 2005
+  { date: "22.04.2005", venue: "Palatsi, (Private)", city: "Turku", country: "Finland" },
   { date: "09.04.2005", venue: "Tivoli 15 -vuotta", city: "Rovaniemi", country: "Finland" },
   { date: "06.02.2005", venue: "Goom-risteily", city: "M/S Romantika", country: "Finland" },
   { date: "08.01.2005", venue: "Hyväntekeväisyyskonsertti<BR>Aasian katastrofin uhrien hyväksi,<BR>Nosturi", city: "Helsinki", country: "Finland" },
