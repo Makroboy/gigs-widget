@@ -86,6 +86,7 @@ window.gigs = [
   { date: "01.04.2006", venue: "Stockmann (unplugged)", city: "Helsinki", country: "Finland" },
   { date: "30.03.2006", venue: "Tuomas & Juuso Experience,<BR>Nelonen (TV, unplugged)", city: "Helsinki", country: "Finland" },
   { date: "29.03.2006", venue: "Pop Klubi,<BR>YLE TV2 (TV)", city: "Helsinki", country: "Finland" },
+  { date: "28.03.2006", venue: "Popstudio,<BR>YLE / YleQ,(Radio, unplugged)", city: "Helsinki", country: "Finland" },
   { date: "24.03.2006", venue: "Kuudes linja,<BR>(album release)", city: "Helsinki", country: "Finland" },
 
   // 2005
