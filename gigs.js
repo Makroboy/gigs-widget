@@ -287,7 +287,7 @@ window.gigs = [
   { date: "04.08.2000", venue: "Koneisto", city: "Turku", country: "Finland" },
   { date: "29.07.2000", venue: "Down By The Kemijoki,<BR>Tivoli", city: "Rovaniemi", country: "Finland" },
   { date: "22.07.2000", venue: "Koriaroll", city: "Koria", country: "Finland" },
-  { date: "16.07.2000", venue: "Tammerfest", city: "Tampere", country: "Finland" },
+  { date: "16.07.2000", venue: "Tammerfest<BR>YO-talo", city: "Tampere", country: "Finland" },
   { date: "08.07.2000", venue: "Ilosaarirock", city: "Joensuu", country: "Finland" },
   { date: "24.06.2000", venue: "Himos Festival", city: "Jämsä", country: "Finland" },
   { date: "23.06.2000", venue: "Midnight Party Planet,<BR>Tykkimäki", city: "Kouvola", country: "Finland" },
