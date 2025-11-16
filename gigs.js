@@ -1,5 +1,6 @@
 window.gigs = [
   // 2025
+  { date: "15.11.2025", venue: "Flow Bar, (Private)<BR>Kalle's Birthday Party", city: "Helsinki", country: "Finland" },
   { date: "13.09.2025", venue: "Suisto", city: "Hämeenlinna", country: "Finland" },
   { date: "12.09.2025", venue: "Krapin Paja", city: "Tuusula", country: "Finland" },
   { date: "05.09.2025", venue: "Tulisuudelma", city: "Vantaa", country: "Finland" },
