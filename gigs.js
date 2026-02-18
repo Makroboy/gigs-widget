@@ -21,6 +21,7 @@ window.gigs = [
   { date: "04.02.2025", venue: "Puoli seitsemän,<BR>YLE TV1 (TV)", city: "Helsinki", country: "Finland" },
   { date: "26.01.2025", venue: "M/S Kesärauha", city: "Viking Grace", country: "Finland" },
 
+  
   // 2022
   { date: "27.08.2022", venue: "Leipätehdas, (Private)", city: "Helsinki", country: "Finland" },
   { date: "01.07.2022", venue: "Provinssi", city: "Seinäjoki", country: "Finland" },
