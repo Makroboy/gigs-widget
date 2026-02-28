@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -121,7 +121,7 @@
       <div class="group-box-header">
         <label for="groupBy">Count by:</label>
         <select id="groupBy">
-          <option value="" selected>— None —</option>
+          <option value="" selected>- None -</option>
           <option value="venue">Venue</option>
           <option value="city">City</option>
           <option value="country">Country</option>
@@ -201,6 +201,18 @@ document.addEventListener('DOMContentLoaded', function(){
     return copy;
   };
 
+  const venueMatchesFilter = (venue, selectedVenue) => {
+    if (!selectedVenue) return true;
+
+    const normalizedVenue = venueForDropdown(venue).toLowerCase();
+    if (normalizedVenue === selectedVenue) return true;
+
+    return normalizedVenue
+      .split(",")
+      .map(part => part.trim())
+      .includes(selectedVenue);
+  };
+
   function applyFilters(rows){
     const s  = (searchInput.value || '').toLowerCase();
     const yf = yearFilter.value;
@@ -209,9 +221,8 @@ document.addEventListener('DOMContentLoaded', function(){
     const cof= countryFilter.value;
 
     return rows.filter(g => {
-      const gVenueUI = venueForDropdown(g.venue).toLowerCase();
       return (!yf || g.date.endsWith(yf)) &&
-             (!vf || gVenueUI === vf) &&
+             venueMatchesFilter(g.venue, vf) &&
              (!cf || g.city === cf) &&
              (!cof || g.country === cof) &&
              (
