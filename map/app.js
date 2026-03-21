@@ -1,9 +1,9 @@
-const ASSET_VERSION = "20260321-6";
+const ASSET_VERSION = "20260321-7";
 const CITY_COORDINATES_URL = `./data/city-coordinates.json?v=${ASSET_VERSION}`;
 const GEO_CACHE_KEY = "kemopetrol-gigs-city-cache-v1";
 const MAP_SOURCE_ID = "gigs";
 const UI_LANG_KEY = "kemopetrol-ui-lang";
-const GIG_LIST_URL = "../";
+const GIG_LIST_URL = "../?v=20260321-7";
 
 const BASEMAPS = {
   night: {
