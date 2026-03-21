@@ -1,14 +1,14 @@
-const ASSET_VERSION = "20260321-10";
+const ASSET_VERSION = "20260321-11";
 const CITY_COORDINATES_URL = `./data/city-coordinates.json?v=${ASSET_VERSION}`;
 const GEO_CACHE_KEY = "kemopetrol-gigs-city-cache-v1";
 const MAP_SOURCE_ID = "gigs";
 const UI_LANG_KEY = "kemopetrol-ui-lang";
-const GIG_LIST_URL = "../?v=20260321-10";
+const GIG_LIST_URL = "../?v=20260321-11";
 
 const BASEMAPS = {
   night: {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; CARTO',
-    background: "#0f0f12",
+    background: "rgba(0, 0, 0, 0)",
     tiles: ["https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"],
   },
 };
