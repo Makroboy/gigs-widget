@@ -1,9 +1,9 @@
-const ASSET_VERSION = "20260321-7";
+const ASSET_VERSION = "20260321-10";
 const CITY_COORDINATES_URL = `./data/city-coordinates.json?v=${ASSET_VERSION}`;
 const GEO_CACHE_KEY = "kemopetrol-gigs-city-cache-v1";
 const MAP_SOURCE_ID = "gigs";
 const UI_LANG_KEY = "kemopetrol-ui-lang";
-const GIG_LIST_URL = "../?v=20260321-7";
+const GIG_LIST_URL = "../?v=20260321-10";
 
 const BASEMAPS = {
   night: {
@@ -18,6 +18,7 @@ const STRINGS = {
     documentTitle: "Kemopetrol Gig Map",
     headlineTitle: "Past Gigs Map",
     gigListLink: "Gig List",
+    mapNote: "Map points may take a moment to appear on first load.",
     filtersAria: "Map filters",
     searchPlaceholder: "Search gigs, cities, or countries...",
     allYears: "All years",
@@ -43,6 +44,7 @@ const STRINGS = {
     documentTitle: "Kemopetrol-keikat kartalla",
     headlineTitle: "Menneet keikat kartalla",
     gigListLink: "Keikkalista",
+    mapNote: "Karttapisteiden lataaminen voi kestaa hetken ensimmaisella latauksella.",
     filtersAria: "Karttasuodattimet",
     searchPlaceholder: "Hae keikkaa, kaupunkia tai maata...",
     allYears: "Kaikki vuodet",
@@ -79,6 +81,7 @@ const cityFilterElement = document.getElementById("cityFilter");
 const mapContainerElement = document.getElementById("mapContainer");
 const filtersBarElement = document.getElementById("filtersBar");
 const portraitHintElement = document.querySelector(".portrait-hint");
+const mapNoteElement = document.getElementById("mapNote");
 const mapElement = document.getElementById("map");
 const langFiButton = document.getElementById("langFi");
 const langEnButton = document.getElementById("langEn");
@@ -147,8 +150,13 @@ async function init() {
 
   await mapLoaded;
   render();
+  const uniqueMissingKeys = getUniqueMissingKeys(allGigs);
 
-  hydrateMissingCoordinates(allGigs).catch((error) => {
+  if (!uniqueMissingKeys.length) {
+    return;
+  }
+
+  hydrateMissingCoordinates(uniqueMissingKeys).catch((error) => {
     console.error(error);
   });
 }
@@ -596,13 +604,15 @@ function buildSeedCoordinateMap(rawCoordinates, includeCache) {
   }
 }
 
-async function hydrateMissingCoordinates(gigs) {
-  const uniqueMissingKeys = [...new Set(
+function getUniqueMissingKeys(gigs) {
+  return [...new Set(
     gigs
       .filter((gig) => !liveCoordinateMap[gig.coordinateKey])
       .map((gig) => gig.coordinateKey),
   )];
+}
 
+async function hydrateMissingCoordinates(uniqueMissingKeys) {
   if (!uniqueMissingKeys.length) {
     return;
   }
@@ -765,6 +775,7 @@ function applyLanguage() {
   mapElement.setAttribute("aria-label", strings.mapAria);
   gigListLinkElement.href = GIG_LIST_URL;
   gigListLinkElement.textContent = strings.gigListLink;
+  mapNoteElement.textContent = strings.mapNote;
   langFiButton.classList.toggle("is-active", currentLanguage === "fi");
   langEnButton.classList.toggle("is-active", currentLanguage === "en");
   langFiButton.setAttribute("aria-pressed", String(currentLanguage === "fi"));

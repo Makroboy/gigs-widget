@@ -215,6 +215,15 @@ button {
   max-width: calc(100% - 24px);
 }
 
+.map-note {
+  width: min(1320px, 100%);
+  margin: 2px auto 0;
+  padding: 0 2px;
+  font-size: 11px;
+  color: rgba(224, 224, 224, 0.72);
+  text-align: center;
+}
+
 .summary-bar {
   display: flex;
   flex-wrap: wrap;
@@ -286,6 +295,7 @@ button {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 8px;
+  position: relative;
 }
 
 .map {
