@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kemopetrol Gig Map</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@^5.12.0/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="./styles.css?v=20260321-6">
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="bg-dim" aria-hidden="true"></div>
+
+  <div class="content">
+    <div class="hero-row">
+      <div class="brand-lockup">
+        <img
+          src="../kemopetrol_logo_optimized.png"
+          alt="Kemopetrol logo"
+          class="corner-logo"
+        >
+        <span class="brand-title">Kemopetrol</span>
+      </div>
+      <div class="page-title">
+        <div class="title-line-big">
+          <span id="headlineTitle">Past Gigs Map</span>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <a class="nav-link" id="gigListLink" href="../">Gig List</a>
+        <div class="language-switch" aria-label="Language selector">
+          <button type="button" class="lang-button" id="langFi" data-lang="fi" aria-label="Suomi">
+            <span class="lang-flag" aria-hidden="true">🇫🇮</span>
+          </button>
+          <button type="button" class="lang-button" id="langEn" data-lang="en" aria-label="English">
+            <span class="lang-flag" aria-hidden="true">🇬🇧</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="filters" id="filtersBar" aria-label="Map filters">
+        <input id="searchInput" type="search" placeholder="Search gigs, cities, or countries..." />
+
+        <select id="yearFilter">
+          <option value="__all__">All years</option>
+        </select>
+
+        <select id="cityFilter">
+          <option value="__all__">All cities</option>
+        </select>
+
+        <select id="countryFilter">
+          <option value="__all__">All countries</option>
+        </select>
+      </div>
+
+      <div class="portrait-hint">Tip: landscape mode gives the map more room on phones.</div>
+    </div>
+
+    <div class="summary-bar">
+      <div class="summary-count">
+        <span id="summaryPrefix">Showing</span>
+        <strong id="resultCount">0</strong>
+        <span id="summarySuffix">gigs</span>
+      </div>
+      <div class="summary-meta-pill" id="resultMeta">Loading archive.</div>
+      <div class="stats stats-inline" id="stats" aria-label="Archive summary"></div>
+    </div>
+
+    <div class="map-container map-idle" id="mapContainer">
+      <div id="map" class="map" aria-label="Map of past Kemopetrol gigs"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/maplibre-gl@^5.12.0/dist/maplibre-gl.js"></script>
+  <script src="../gigs.js?v=20260321-6"></script>
+  <script src="./app.js?v=20260321-6" type="module"></script>
+</body>
+</html>
