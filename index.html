@@ -121,7 +121,7 @@
 
   <div class="summary-bar">
     <div class="summary-count">Showing <strong id="totalCount">0</strong> gigs</div>
-    <a href="./map/" class="link-button">Gigs On Map</a>
+    <a href="./map/?v=20260321-7" class="link-button">Gigs On Map</a>
     <button id="toggleOrder" aria-label="Toggle sort order">Newest first ▼</button>
 
     <div class="group-box">
@@ -160,6 +160,13 @@
 <script src="gigs.js"></script>
 
 <script>
+window.addEventListener('pageshow', function(event){
+  const nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+  if (event.persisted || (nav && nav.type === 'back_forward')) {
+    window.location.reload();
+  }
+});
+
 document.addEventListener('DOMContentLoaded', function(){
   const gigs = (window.gigs || []).slice();
 
