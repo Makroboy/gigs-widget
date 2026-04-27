@@ -341,3 +341,5 @@ window.gigs = [
   { date: "09.04.1999", venue: "Ääni ja vimma,<BR>Kettutien nuorisotalo", city: "Helsinki", country: "Finland" },
   { date: "18.03.1999", venue: "Espoo–Vantaa Polytechnic", city: "Espoo", country: "Finland" }
 ];
+
+
